@@ -1,0 +1,3 @@
+plugins:
+  - plugin_name: Yoma Wallet Groups Plugin
+    local_directory: yoma_wallet_groups_plugin

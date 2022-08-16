@@ -1,0 +1,49 @@
+label: Agent + Yoma wallet groups plugin
+
+plugin:
+  - yoma_wallet_groups_plugin
+
+# Admin
+admin: [0.0.0.0, 8000]
+admin-insecure-mode: true
+
+# Transport
+inbound-transport:
+  - [http, 0.0.0.0, 9001]
+  - [ws, 0.0.0.0, 9000]
+outbound-transport:
+  - http
+  - ws
+endpoint:
+  - http://0.0.0.0:9001
+  - ws://0.0.0.0:9000
+
+# Ledger
+no-ledger: true
+
+# Connections
+auto-accept-invites: true
+auto-accept-requests: true
+auto-ping-connection: true
+invite-multi-use: true
+
+# Wallet
+wallet-name: default
+wallet-type: indy
+wallet-key: 'insecure, for use in demo only'
+auto-provision: true
+
+# Enable undelivered queue
+# Important for communication with toolbox over http (as opposed to ws)
+enable-undelivered-queue: true
+open-mediation: true
+
+# log-level: WARN
+debug-connections: true
+debug-credentials: true
+debug-presentations: true
+
+# multitenancy
+multitenant: true
+multitenant-admin: true
+jwt-secret: 'insecure, for use in demo only'
