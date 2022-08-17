@@ -29,7 +29,7 @@ from aries_cloudagent.core.profile import ProfileManagerProvider
 from aries_cloudagent.messaging.models.base import BaseModelError
 from aries_cloudagent.messaging.models.openapi import OpenAPISchema
 from aries_cloudagent.messaging.valid import UUIDFour
-from aries_cloudagent.multitenant.base import BaseMultitenantManager
+from aries_cloudagent.multitenant.base import BaseMultitenantManager, BaseStorage
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.wallet.models.wallet_record import (
     WalletRecord,
@@ -46,9 +46,9 @@ def format_wallet_record(wallet_record: WalletRecord):
     if "wallet.key" in wallet_info["settings"]:
         del wallet_info["settings"]["wallet.key"]
 
-    wallet_group_id = wallet_record.tags.get("wallet_group_id")
-    if wallet_group_id:
-        wallet_info["wallet_group_id"] = wallet_group_id
+    group_id = wallet_record.tags.get("group_id")
+    if group_id:
+        wallet_info["group_id"] = group_id
 
     return wallet_info
 
@@ -75,7 +75,7 @@ class YomaCreateWalletRequestSchema(OpenAPISchema):
     )
 
     # TODO: determine the example for the group identifier
-    wallet_group_id = fields.Str(description="Wallet group identifier.", example="NL")
+    group_id = fields.Str(description="Wallet group identifier.", example="NL")
 
     wallet_key_derivation = fields.Str(
         description="Key derivation",
@@ -157,7 +157,7 @@ class YomaWalletListQueryStringSchema(OpenAPISchema):
     wallet_name = fields.Str(description="Wallet name", example="MyNewWallet")
 
     # TODO: determine the example for the group identifier
-    wallet_group_id = fields.Str(description="Wallet group identifier", example="NL")
+    group_id = fields.Str(description="Wallet group identifier", example="NL")
 
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
@@ -176,11 +176,11 @@ async def wallets_list(request: web.BaseRequest):
 
     query = {}
     wallet_name = request.query.get("wallet_name")
-    wallet_group_id = request.query.get("wallet_group_id")
+    group_id = request.query.get("group_id")
     if wallet_name:
         query["wallet_name"] = wallet_name
-    if wallet_group_id:
-        query["wallet_group_id"] = wallet_group_id
+    if group_id:
+        query["roup_id"] = group_id
 
     try:
         async with profile.session() as session:
@@ -240,7 +240,7 @@ async def wallet_create(request: web.BaseRequest):
 
     key_management_mode = body.get("key_management_mode") or WalletRecord.MODE_MANAGED
     wallet_key = body.get("wallet_key")
-    wallet_group_id = body.get("wallet_group_id")
+    group_id = body.get("group_id")
     wallet_webhook_urls = body.get("wallet_webhook_urls") or []
     wallet_dispatch_type = body.get("wallet_dispatch_type") or "default"
     # If no webhooks specified, then dispatch only to base webhook targets
@@ -272,8 +272,19 @@ async def wallet_create(request: web.BaseRequest):
             settings, key_management_mode
         )
 
-        if wallet_group_id:
-            wallet_record.tags["group_id"] = wallet_group_id
+        if group_id:
+            print(f"--------- GROUP_ID {group_id} ---------------")
+            # This can update the settings but we cannot query this...
+            wallet_record.update_settings({"wallet.group_id": group_id})
+
+            # This errors because we do not supply `group_id` in the constructor
+            wallet_record.TAG_NAMES.update({"group_id"})
+
+            # Does not add anything as I believe it is a "readonly" property
+            wallet_record.tags.update({"~group_id": group_id})
+
+            # Empty dict. should contain: `{"group_id": "NL"}`
+            print(wallet_record.tags)
 
         token = await multitenant_mgr.create_auth_token(wallet_record, wallet_key)
     except BaseError as err:
@@ -291,16 +302,12 @@ async def register(app: web.Application):
 
     app.add_routes(
         [
-            web.get("/yoma-multitenancy/wallets", wallets_list, allow_head=False),
-            web.post("/yoma-multitenancy/wallet", wallet_create),
-            web.get(
-                "/yoma-multitenancy/wallet/{wallet_id}", wallet_get, allow_head=False
-            ),
-            web.put("/yoma-multitenancy/wallet/{wallet_id}", wallet_update),
-            web.post(
-                "/yoma-multitenancy/wallet/{wallet_id}/token", wallet_create_token
-            ),
-            web.post("/yoma-multitenancy/wallet/{wallet_id}/remove", wallet_remove),
+            web.get("/multitenancy/wallets", wallets_list, allow_head=False),
+            web.post("/multitenancy/wallet", wallet_create),
+            web.get("/multitenancy/wallet/{wallet_id}", wallet_get, allow_head=False),
+            web.put("/multitenancy/wallet/{wallet_id}", wallet_update),
+            web.post("/multitenancy/wallet/{wallet_id}/token", wallet_create_token),
+            web.post("/multitenancy/wallet/{wallet_id}/remove", wallet_remove),
         ]
     )
 
@@ -313,5 +320,8 @@ def post_process_routes(app: web.Application):
         app._state["swagger_dict"]["tags"] = []
 
     app._state["swagger_dict"]["tags"].append(
-        {"name": "yoma-multitenancy", "description": "Yoma specific Multitenant wallet management"}
+        {
+            "name": "yoma-multitenancy",
+            "description": "Yoma specific Multitenant wallet management",
+        }
     )
