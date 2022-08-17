@@ -29,7 +29,7 @@ from aries_cloudagent.core.profile import ProfileManagerProvider
 from aries_cloudagent.messaging.models.base import BaseModelError
 from aries_cloudagent.messaging.models.openapi import OpenAPISchema
 from aries_cloudagent.messaging.valid import UUIDFour
-from aries_cloudagent.multitenant.base import BaseMultitenantManager, BaseStorage
+from aries_cloudagent.multitenant.base import BaseMultitenantManager
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.wallet.models.wallet_record import (
     WalletRecord,
@@ -46,9 +46,9 @@ def format_wallet_record(wallet_record: WalletRecord):
     if "wallet.key" in wallet_info["settings"]:
         del wallet_info["settings"]["wallet.key"]
 
-    group_id = wallet_record.tags.get("group_id")
-    if group_id:
-        wallet_info["group_id"] = group_id
+    if 'wallet.group_id' in wallet_info['settings']:
+        wallet_info["group_id"] = wallet_info["settings"]["wallet.group_id"]
+        del wallet_info["settings"]["wallet.group_id"]
 
     return wallet_info
 
@@ -273,18 +273,10 @@ async def wallet_create(request: web.BaseRequest):
         )
 
         if group_id:
-            print(f"--------- GROUP_ID {group_id} ---------------")
-            # This can update the settings but we cannot query this...
             wallet_record.update_settings({"wallet.group_id": group_id})
 
-            # This errors because we do not supply `group_id` in the constructor
-            wallet_record.TAG_NAMES.update({"group_id"})
-
-            # Does not add anything as I believe it is a "readonly" property
-            wallet_record.tags.update({"~group_id": group_id})
-
-            # Empty dict. should contain: `{"group_id": "NL"}`
-            print(wallet_record.tags)
+            async with context.profile.session() as session:
+                await wallet_record.save(session)
 
         token = await multitenant_mgr.create_auth_token(wallet_record, wallet_key)
     except BaseError as err:
