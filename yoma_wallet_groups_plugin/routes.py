@@ -24,7 +24,6 @@ from aries_cloudagent.multitenant.admin.routes import (
     CreateWalletResponseSchema,
 )
 from aries_cloudagent.admin.request_context import AdminRequestContext
-from aries_cloudagent.core.error import BaseError
 from aries_cloudagent.core.profile import ProfileManagerProvider
 from aries_cloudagent.messaging.models.base import BaseModelError
 from aries_cloudagent.messaging.models.openapi import OpenAPISchema
@@ -46,9 +45,8 @@ def format_wallet_record(wallet_record: WalletRecord):
     if "wallet.key" in wallet_info["settings"]:
         del wallet_info["settings"]["wallet.key"]
 
-    if 'wallet.group_id' in wallet_info['settings']:
-        wallet_info["group_id"] = wallet_info["settings"]["wallet.group_id"]
-        del wallet_info["settings"]["wallet.group_id"]
+    if wallet_record.group_id:
+        wallet_info["group_id"] = wallet_record.group_id
 
     return wallet_info
 
@@ -180,7 +178,7 @@ async def wallets_list(request: web.BaseRequest):
     if wallet_name:
         query["wallet_name"] = wallet_name
     if group_id:
-        query["roup_id"] = group_id
+        query["group_id"] = group_id
 
     try:
         async with profile.session() as session:
@@ -273,7 +271,9 @@ async def wallet_create(request: web.BaseRequest):
         )
 
         if group_id:
-            wallet_record.update_settings({"wallet.group_id": group_id})
+            wallet_record.group_id = group_id
+
+            print(wallet_record.record_tags)
 
             async with context.profile.session() as session:
                 await wallet_record.save(session)
