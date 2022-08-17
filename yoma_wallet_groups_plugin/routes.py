@@ -17,8 +17,8 @@ from aiohttp_apispec import (
 from marshmallow import fields
 
 from aries_cloudagent.multitenant.admin.routes import (
+    UpdateWalletRequestSchema,
     CreateWalletRequestSchema,
-    MultitenantModuleResponseSchema,
     WalletIdMatchInfoSchema,
     WalletListQueryStringSchema,
     wallet_update,
@@ -26,6 +26,7 @@ from aries_cloudagent.multitenant.admin.routes import (
     wallet_remove,
     WalletListSchema,
     CreateWalletResponseSchema,
+    WalletSettingsError
 )
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.messaging.models.base import BaseModelError
@@ -194,6 +195,77 @@ async def wallet_create(request: web.BaseRequest):
         **format_wallet_record(wallet_record),
         "token": token,
     }
+    return web.json_response(result)
+
+
+class YomaUpdateWalletRequestSchema(UpdateWalletRequestSchema):
+    """Request schema for updating a existing wallet."""
+
+    group_id = fields.Str(description="Wallet group identifier.", example="NL")
+
+
+@docs(tags=["multitenancy"], summary="Update a subwallet")
+@match_info_schema(WalletIdMatchInfoSchema())
+@request_schema(YomaUpdateWalletRequestSchema)
+@response_schema(WalletRecordSchema(), 200, description="")
+async def wallet_update(request: web.BaseRequest):
+    """
+    Request handler for updating a existing subwallet for handling by the agent.
+
+    Args:
+        request: aiohttp request object
+    """
+
+    context: AdminRequestContext = request["context"]
+    wallet_id = request.match_info["wallet_id"]
+
+    body = await request.json()
+    wallet_webhook_urls = body.get("wallet_webhook_urls")
+    wallet_dispatch_type = body.get("wallet_dispatch_type")
+    label = body.get("label")
+    image_url = body.get("image_url")
+    group_id = body.get("group_id")
+
+    if all(
+        v is None for v in (wallet_webhook_urls, wallet_dispatch_type, label, image_url, group_id)
+    ):
+        raise web.HTTPBadRequest(reason="At least one parameter is required.")
+
+    # adjust wallet_dispatch_type according to wallet_webhook_urls
+    if wallet_webhook_urls and wallet_dispatch_type is None:
+        wallet_dispatch_type = "default"
+    if wallet_webhook_urls == []:
+        wallet_dispatch_type = "base"
+
+    # only parameters that are not none are updated
+    settings = {}
+    if wallet_webhook_urls is not None:
+        settings["wallet.webhook_urls"] = wallet_webhook_urls
+    if wallet_dispatch_type is not None:
+        settings["wallet.dispatch_type"] = wallet_dispatch_type
+    if label is not None:
+        settings["default_label"] = label
+    if image_url is not None:
+        settings["image_url"] = image_url
+
+
+    try:
+        multitenant_mgr = context.profile.inject(BaseMultitenantManager)
+        wallet_record = await multitenant_mgr.update_wallet(wallet_id, settings)
+
+        if group_id is not None:
+            wallet_record.group_id = group_id
+
+        # Save the record with the new custom group_id
+        async with context.profile.session() as session:
+            await wallet_record.save(session)
+
+        result = format_wallet_record(wallet_record)
+    except StorageNotFoundError as err:
+        raise web.HTTPNotFound(reason=err.roll_up) from err
+    except WalletSettingsError as err:
+        raise web.HTTPBadRequest(reason=err.roll_up) from err
+
     return web.json_response(result)
 
 
