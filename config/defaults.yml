@@ -46,4 +46,4 @@ debug-presentations: true
 # multitenancy
 multitenant: true
 multitenant-admin: false
-jwt-secret: foo
+jwt-secret: 'insecure, for use in demo only'
