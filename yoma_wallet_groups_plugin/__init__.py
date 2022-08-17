@@ -7,6 +7,15 @@ from aries_cloudagent.wallet.models.wallet_record import (
 
 __version__ = "0.1.0"
 
+# ------------------------------------------
+# The code below done because ACA-Py, version 0.7.4 does not support custom
+# user-defined tags. This custom_wallet_init allows us to set the
+# `self.group_id` and afterwards we add it to the `TAG_NAMES` so that indy sees
+# it as a wallet tag.
+# 
+# We need support for custom tags so we can query, retrieving, a sub-set of
+# wallets.
+
 original_wallet_init = WalletRecord.__init__
 
 def custom_wallet_init(
@@ -23,6 +32,7 @@ def custom_wallet_init(
 WalletRecord.TAG_NAMES = { *WalletRecord.TAG_NAMES, "group_id" }
 WalletRecord.group_id = None
 WalletRecord.__init__ = custom_wallet_init
+# ------------------------------------------
 
 async def setup(_: InjectionContext):
     """Plugin initialization call.
