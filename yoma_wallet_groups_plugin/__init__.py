@@ -18,8 +18,9 @@ def custom_wallet_init(
     original_wallet_init(self, **kwargs)
     self.group_id = group_id
 
+
 # Extend wallet record to include the group id as tag name
-WalletRecord.TAG_NAMES = {"wallet_name", "group_id"}
+WalletRecord.TAG_NAMES = { *WalletRecord.TAG_NAMES, "group_id" }
 WalletRecord.group_id = None
 WalletRecord.__init__ = custom_wallet_init
 
