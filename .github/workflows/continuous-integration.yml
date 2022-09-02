@@ -19,8 +19,6 @@ jobs:
           python-version: 3.9.4
       - name: Set up Poetry
         uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
       - name: Install test dependencies.
         run: pip install asynctest
       - name: Test with pytest
