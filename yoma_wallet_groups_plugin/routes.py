@@ -53,14 +53,14 @@ def format_wallet_record(wallet_record: WalletRecord):
     return wallet_info
 
 
-class YomaCreateWalletRequestSchema(CreateWalletRequestSchema):
+class AcaPyCreateWalletRequestSchema(CreateWalletRequestSchema):
     """Request schema for adding a new wallet which will be registered by the agent."""
 
     # TODO: determine the example for the group identifier
     group_id = fields.Str(description="Wallet group identifier.", example="NL")
 
 
-class YomaWalletListQueryStringSchema(WalletListQueryStringSchema):
+class AcaPyWalletListQueryStringSchema(WalletListQueryStringSchema):
     """Parameters and validators for wallet list request query string."""
 
     # TODO: determine the example for the group identifier
@@ -68,7 +68,7 @@ class YomaWalletListQueryStringSchema(WalletListQueryStringSchema):
 
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
-@querystring_schema(YomaWalletListQueryStringSchema())
+@querystring_schema(AcaPyWalletListQueryStringSchema())
 @response_schema(WalletListSchema(), 200, description="")
 async def wallets_list(request: web.BaseRequest):
     """
@@ -132,7 +132,7 @@ async def wallet_get(request: web.BaseRequest):
 
 
 @docs(tags=["multitenancy"], summary="Create a subwallet")
-@request_schema(YomaCreateWalletRequestSchema)
+@request_schema(AcaPyCreateWalletRequestSchema)
 @response_schema(CreateWalletResponseSchema(), 200, description="")
 async def wallet_create(request: web.BaseRequest):
     """
@@ -198,7 +198,7 @@ async def wallet_create(request: web.BaseRequest):
     return web.json_response(result)
 
 
-class YomaUpdateWalletRequestSchema(UpdateWalletRequestSchema):
+class AcaPyUpdateWalletRequestSchema(UpdateWalletRequestSchema):
     """Request schema for updating a existing wallet."""
 
     group_id = fields.Str(description="Wallet group identifier.", example="NL")
@@ -206,7 +206,7 @@ class YomaUpdateWalletRequestSchema(UpdateWalletRequestSchema):
 
 @docs(tags=["multitenancy"], summary="Update a subwallet")
 @match_info_schema(WalletIdMatchInfoSchema())
-@request_schema(YomaUpdateWalletRequestSchema)
+@request_schema(AcaPyUpdateWalletRequestSchema)
 @response_schema(WalletRecordSchema(), 200, description="")
 async def wallet_update(request: web.BaseRequest):
     """
@@ -293,7 +293,7 @@ def post_process_routes(app: web.Application):
 
     app._state["swagger_dict"]["tags"].append(
         {
-            "name": "yoma-multitenancy",
-            "description": "Yoma specific Multitenant wallet management",
+            "name": "AcaPy-multitenancy",
+            "description": "AcaPy specific Multitenant wallet management",
         }
     )

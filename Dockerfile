@@ -1,6 +1,6 @@
 FROM bcgovimages/aries-cloudagent:py36-1.16-1_0.7.4
 
-COPY yoma_wallet_groups_plugin yoma_wallet_groups_plugin
+COPY acapy_wallet_groups_plugin acapy_wallet_groups_plugin
 COPY config config
 
 USER root

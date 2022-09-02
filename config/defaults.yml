@@ -1,7 +1,7 @@
-label: Agent + Yoma wallet groups plugin
+label: Agent + ACA-Py wallet groups plugin
 
 plugin:
-  - yoma_wallet_groups_plugin
+  - acapy_wallet_groups_plugin
 
 # Admin
 admin: [0.0.0.0, 8000]
@@ -30,7 +30,7 @@ invite-multi-use: true
 # Wallet
 wallet-name: default
 wallet-type: indy
-wallet-key: 'insecure, for use in demo only'
+wallet-key: "insecure, for use in demo only"
 auto-provision: true
 
 # Enable undelivered queue
@@ -46,4 +46,4 @@ debug-presentations: true
 # multitenancy
 multitenant: true
 multitenant-admin: false
-jwt-secret: 'insecure, for use in demo only'
+jwt-secret: "insecure, for use in demo only"
