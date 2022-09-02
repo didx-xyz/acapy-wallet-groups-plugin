@@ -24,6 +24,4 @@ jobs:
       - name: Install test dependencies.
         run: pip install asynctest
       - name: Test with pytest
-        id: test
-        continue-on-error: true
         run: pytest
