@@ -1,0 +1,31 @@
+name: Continuous Build
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.9.4
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9.4
+
+      - name: Set up Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.2.0
+
+      - name: Install dependencies
+        run: poetry install --with dev
+
+      - name: Test with pytest
+        run: poetry run pytest ./tests
