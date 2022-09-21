@@ -23,6 +23,8 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: 1.2.0
+        env:
+          PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
 
       - name: Install dependencies
         run: poetry install --with dev
