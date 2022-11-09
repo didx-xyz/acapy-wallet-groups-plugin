@@ -62,7 +62,7 @@ In order to run the tests, you'll need to install the dependencies first. The ch
 poetry shell
 
 # Install the dependencies
-poetry install
+poetry install --with dev
 
 # Run the tests
 poetry run pytest ./tests
