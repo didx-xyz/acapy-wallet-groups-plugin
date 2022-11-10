@@ -58,6 +58,9 @@ In order to run the tests, you'll need to install the dependencies first. The ch
 # Uncomment if you don't have poetry installed
 # pip install poetry
 
+# Activate the environment
+poetry shell
+
 # Install the dependencies
 poetry install --with dev
 
