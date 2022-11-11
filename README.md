@@ -36,7 +36,9 @@ To run ACA-Py with this plugin locally, you'll need to provide the path to this 
 aca-py start --plugin ./acapy_wallet_groups_plugin <other params>
 ```
 
-IMPORTANT NOTE: When passing an env file or env vars to the aca-py instance make sure to set `ACAPY_MULTITENANT_ADMIN=false` as opposed to `ACAPY_MULTITENANT_ADMIN=true`. If set to true the plugin will register and the endpoint will show up with the correct query fields in OpenAPI, _but_ under the hood not register the plugin correctly. That results in weird behaviour where no group_id key is returned in the response and querying by group_id just returns all wallets.
+**Warning**
+
+When passing an env file or env vars to the aca-py instance make sure to set `ACAPY_MULTITENANT_ADMIN=false` as opposed to `ACAPY_MULTITENANT_ADMIN=true` (or `--multitenant-admin false` for cli arg, or `multitenant-admin: false` for YAML config file). If set to true the plugin will register and the endpoint will show up with the correct query fields in OpenAPI, _but_ under the hood not register the plugin correctly. That results in weird behaviour where no group_id key is returned in the response and querying by group_id just returns all wallets.
 
 ### Docker
 
