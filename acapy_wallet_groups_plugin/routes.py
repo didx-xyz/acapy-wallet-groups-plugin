@@ -14,28 +14,27 @@ from aiohttp_apispec import (
     request_schema,
     response_schema,
 )
-from marshmallow import fields
-
-from aries_cloudagent.multitenant.admin.routes import (
-    UpdateWalletRequestSchema,
-    CreateWalletRequestSchema,
-    WalletIdMatchInfoSchema,
-    WalletListQueryStringSchema,
-    wallet_update,
-    wallet_create_token,
-    wallet_remove,
-    WalletListSchema,
-    CreateWalletResponseSchema,
-    WalletSettingsError
-)
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.multitenant.base import BaseMultitenantManager, BaseError
+from aries_cloudagent.multitenant.admin.routes import (
+    CreateWalletRequestSchema,
+    CreateWalletResponseSchema,
+    UpdateWalletRequestSchema,
+    WalletIdMatchInfoSchema,
+    WalletListQueryStringSchema,
+    WalletListSchema,
+    WalletSettingsError,
+    wallet_create_token,
+    wallet_remove,
+    wallet_update,
+)
+from aries_cloudagent.multitenant.base import BaseError, BaseMultitenantManager
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.wallet.models.wallet_record import (
     WalletRecord,
     WalletRecordSchema,
 )
+from marshmallow import fields
 
 
 def format_wallet_record(wallet_record: WalletRecord):

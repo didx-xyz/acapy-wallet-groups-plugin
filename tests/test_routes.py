@@ -1,13 +1,15 @@
+from aries_cloudagent.admin.request_context import AdminRequestContext
+from aries_cloudagent.messaging.models.base import BaseModelError
+from aries_cloudagent.multitenant.base import (
+    BaseMultitenantManager,
+    MultitenantManagerError,
+)
+from aries_cloudagent.multitenant.error import WalletKeyMissingError
+from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
+from aries_cloudagent.wallet.models.wallet_record import WalletRecord
 from asynctest import TestCase as AsyncTestCase
 from asynctest import mock as async_mock
 from marshmallow.exceptions import ValidationError
-
-from aries_cloudagent.multitenant.base import BaseMultitenantManager, MultitenantManagerError
-from aries_cloudagent.multitenant.error import WalletKeyMissingError
-from aries_cloudagent.admin.request_context import AdminRequestContext
-from aries_cloudagent.wallet.models.wallet_record import WalletRecord
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 
 import acapy_wallet_groups_plugin.routes as test_module
 
