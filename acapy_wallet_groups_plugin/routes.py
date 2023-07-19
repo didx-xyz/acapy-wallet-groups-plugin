@@ -227,7 +227,8 @@ async def wallet_update(request: web.BaseRequest):
     group_id = body.get("group_id")
 
     if all(
-        v is None for v in (wallet_webhook_urls, wallet_dispatch_type, label, image_url, group_id)
+        v is None
+        for v in (wallet_webhook_urls, wallet_dispatch_type, label, image_url, group_id)
     ):
         raise web.HTTPBadRequest(reason="At least one parameter is required.")
 
@@ -247,7 +248,6 @@ async def wallet_update(request: web.BaseRequest):
         settings["default_label"] = label
     if image_url is not None:
         settings["image_url"] = image_url
-
 
     try:
         multitenant_mgr = context.profile.inject(BaseMultitenantManager)

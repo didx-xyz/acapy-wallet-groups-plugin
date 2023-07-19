@@ -122,7 +122,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                             "created_at": "1234567890",
                             "settings": {"wallet.name": "test"},
                         }
-                    )
+                    ),
                 ),
             ]
             mock_wallet_record.query = async_mock.CoroutineMock()
@@ -287,7 +287,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         "wallet_id": "test-wallet-id",
                         "settings": settings,
                     }
-                )
+                ),
             )
             self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
                 return_value=wallet_mock
@@ -300,7 +300,11 @@ class TestMultitenantRoutes(AsyncTestCase):
                 settings,
             )
             mock_response.assert_called_once_with(
-                {"wallet_id": "test-wallet-id", "settings": settings, "group_id": "test-group-id"}
+                {
+                    "wallet_id": "test-wallet-id",
+                    "settings": settings,
+                    "group_id": "test-group-id",
+                }
             )
 
     async def test_wallet_update_no_wallet_webhook_urls(self):
@@ -324,7 +328,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         "wallet_id": "test-wallet-id",
                         "settings": settings,
                     }
-                )
+                ),
             )
             self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
                 return_value=wallet_mock
@@ -337,7 +341,11 @@ class TestMultitenantRoutes(AsyncTestCase):
                 settings,
             )
             mock_response.assert_called_once_with(
-                {"wallet_id": "test-wallet-id", "settings": settings, "group_id": "test-group-id"}
+                {
+                    "wallet_id": "test-wallet-id",
+                    "settings": settings,
+                    "group_id": "test-group-id",
+                }
             )
 
     async def test_wallet_update_empty_wallet_webhook_urls(self):
@@ -364,7 +372,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         "wallet_id": "test-wallet-id",
                         "settings": settings,
                     }
-                )
+                ),
             )
             self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
                 return_value=wallet_mock
@@ -377,7 +385,11 @@ class TestMultitenantRoutes(AsyncTestCase):
                 settings,
             )
             mock_response.assert_called_once_with(
-                {"wallet_id": "test-wallet-id", "settings": settings, "group_id": "test-group-id"}
+                {
+                    "wallet_id": "test-wallet-id",
+                    "settings": settings,
+                    "group_id": "test-group-id",
+                }
             )
 
     async def test_wallet_update_wallet_settings_x(self):
@@ -545,9 +557,7 @@ class TestMultitenantRoutes(AsyncTestCase):
             mock_wallet_record_retrieve_by_id.return_value = async_mock.MagicMock()
 
             with self.assertRaises(test_module.web.HTTPUnauthorized):
-                mock_wallet_record_retrieve_by_id.side_effect = (
-                    WalletKeyMissingError()
-                )
+                mock_wallet_record_retrieve_by_id.side_effect = WalletKeyMissingError()
                 await test_module.wallet_create_token(self.request)
 
             with self.assertRaises(test_module.web.HTTPNotFound):
