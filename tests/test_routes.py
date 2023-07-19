@@ -13,6 +13,7 @@ from marshmallow.exceptions import ValidationError
 
 import acapy_wallet_groups_plugin.routes as test_module
 
+test_created_at = 1234567890
 test_group_id = "test-group-id"
 test_image_url = "test-image-url"
 test_key = "dummy_key"
@@ -26,6 +27,13 @@ dict_wallet_key = {"wallet_key": test_key}
 setting_wallet_name = "wallet.name"
 setting_wallet_key = "wallet.key"
 dict_setting_wallet_name = {setting_wallet_name: test_wallet_name}
+dict_wallet_id_w_settings = {
+    "wallet_id": test_wallet_id,
+    "settings": dict_setting_wallet_name,
+}
+dict_wallet_id_w_settings_created_at = dict_wallet_id_w_settings.update(
+    {"created_at": str(test_created_at)}
+)
 
 
 class TestMultitenantRoutes(AsyncTestCase):
@@ -76,29 +84,21 @@ class TestMultitenantRoutes(AsyncTestCase):
             wallets = [
                 async_mock.MagicMock(
                     serialize=async_mock.MagicMock(
-                        return_value={
-                            "wallet_id": test_wallet_id,
-                            "created_at": "1234567890",
-                            "settings": dict_setting_wallet_name,
-                        }
+                        return_value=dict_wallet_id_w_settings_created_at
                     )
                 ),
                 async_mock.MagicMock(
                     serialize=async_mock.MagicMock(
-                        return_value={
-                            "wallet_id": test_wallet_id,
-                            "created_at": "1234567891",
-                            "settings": dict_setting_wallet_name,
-                        }
+                        return_value=dict_wallet_id_w_settings.update(
+                            {"created_at": str(test_created_at + 1)}
+                        )
                     )
                 ),
                 async_mock.MagicMock(
                     serialize=async_mock.MagicMock(
-                        return_value={
-                            "wallet_id": test_wallet_id,
-                            "created_at": "1234567892",
-                            "settings": dict_setting_wallet_name,
-                        }
+                        return_value=dict_wallet_id_w_settings.update(
+                            {"created_at": str(test_created_at + 2)}
+                        )
                     )
                 ),
             ]
@@ -136,11 +136,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                 async_mock.MagicMock(
                     group_id=test_group_id,
                     serialize=async_mock.MagicMock(
-                        return_value={
-                            "wallet_id": test_wallet_id,
-                            "created_at": "1234567890",
-                            "settings": dict_setting_wallet_name,
-                        }
+                        return_value=dict_wallet_id_w_settings_created_at
                     ),
                 ),
             ]
@@ -301,12 +297,7 @@ class TestMultitenantRoutes(AsyncTestCase):
             wallet_mock = async_mock.MagicMock(
                 group_id=test_group_id,
                 save=async_mock.CoroutineMock(),
-                serialize=async_mock.MagicMock(
-                    return_value={
-                        "wallet_id": test_wallet_id,
-                        "settings": settings,
-                    }
-                ),
+                serialize=async_mock.MagicMock(return_value=dict_wallet_id_w_settings),
             )
             self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
                 return_value=wallet_mock
@@ -342,12 +333,7 @@ class TestMultitenantRoutes(AsyncTestCase):
             wallet_mock = async_mock.MagicMock(
                 group_id=test_group_id,
                 save=async_mock.CoroutineMock(),
-                serialize=async_mock.MagicMock(
-                    return_value={
-                        "wallet_id": test_wallet_id,
-                        "settings": settings,
-                    }
-                ),
+                serialize=async_mock.MagicMock(return_value=dict_wallet_id_w_settings),
             )
             self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
                 return_value=wallet_mock
@@ -386,12 +372,7 @@ class TestMultitenantRoutes(AsyncTestCase):
             wallet_mock = async_mock.MagicMock(
                 group_id=test_group_id,
                 save=async_mock.CoroutineMock(),
-                serialize=async_mock.MagicMock(
-                    return_value={
-                        "wallet_id": test_wallet_id,
-                        "settings": settings,
-                    }
-                ),
+                serialize=async_mock.MagicMock(return_value=dict_wallet_id_w_settings),
             )
             self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
                 return_value=wallet_mock
@@ -452,7 +433,7 @@ class TestMultitenantRoutes(AsyncTestCase):
         self.request.match_info = {"wallet_id": test_wallet_id}
         mock_wallet_record = async_mock.MagicMock(group_id=test_group_id)
         mock_wallet_record.serialize = async_mock.MagicMock(
-            return_value={"settings": {}, "wallet_id": test_wallet_id}
+            return_value=dict_wallet_id_w_settings
         )
 
         with async_mock.patch.object(
@@ -498,7 +479,7 @@ class TestMultitenantRoutes(AsyncTestCase):
         self.request.match_info = {"wallet_id": test_wallet_id}
         mock_wallet_record = async_mock.MagicMock()
         mock_wallet_record.serialize = async_mock.MagicMock(
-            return_value={"settings": {}, "wallet_id": test_wallet_id}
+            return_value=dict_wallet_id_w_settings
         )
 
         with async_mock.patch.object(
@@ -524,7 +505,7 @@ class TestMultitenantRoutes(AsyncTestCase):
         self.request.json = async_mock.CoroutineMock(return_value=dict_wallet_key)
         mock_wallet_record = async_mock.MagicMock()
         mock_wallet_record.serialize = async_mock.MagicMock(
-            return_value={"settings": {}, "wallet_id": test_wallet_id}
+            return_value=dict_wallet_id_w_settings
         )
 
         with async_mock.patch.object(
@@ -550,7 +531,7 @@ class TestMultitenantRoutes(AsyncTestCase):
         self.request.json = async_mock.CoroutineMock(return_value=dict_wallet_key)
         mock_wallet_record = async_mock.MagicMock()
         mock_wallet_record.serialize = async_mock.MagicMock(
-            return_value={"settings": {}, "wallet_id": test_wallet_id}
+            return_value=dict_wallet_id_w_settings
         )
         mock_wallet_record.requires_external_key = False
 
