@@ -13,12 +13,19 @@ from marshmallow.exceptions import ValidationError
 
 import acapy_wallet_groups_plugin.routes as test_module
 
-test_wallet_id = "test-wallet-id"
 test_group_id = "test-group-id"
+test_image_url = "test-image-url"
 test_key = "dummy_key"
+test_label = "test-label"
 test_token = "test_token"
+test_wallet_id = "test-wallet-id"
 test_wallet_name = "wallet_name"
+
 dict_wallet_key = {"wallet_key": test_key}
+
+setting_wallet_name = "wallet.name"
+setting_wallet_key = "wallet.key"
+dict_setting_wallet_name = {setting_wallet_name: test_wallet_name}
 
 
 class TestMultitenantRoutes(AsyncTestCase):
@@ -50,12 +57,15 @@ class TestMultitenantRoutes(AsyncTestCase):
         wallet_record = WalletRecord(
             wallet_id=test_wallet_id,
             key_management_mode=WalletRecord.MODE_MANAGED,
-            settings={"wallet.name": test_wallet_name, "wallet.key": test_key},
+            settings={
+                setting_wallet_name: test_wallet_name,
+                setting_wallet_key: test_key,
+            },
         )
 
         formatted = test_module.format_wallet_record(wallet_record)
 
-        assert "wallet.key" not in formatted["settings"]
+        assert setting_wallet_key not in formatted["settings"]
 
     async def test_wallets_list(self):
         with async_mock.patch.object(
@@ -69,7 +79,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         return_value={
                             "wallet_id": test_wallet_id,
                             "created_at": "1234567890",
-                            "settings": {"wallet.name": test_wallet_name},
+                            "settings": dict_setting_wallet_name,
                         }
                     )
                 ),
@@ -78,7 +88,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         return_value={
                             "wallet_id": test_wallet_id,
                             "created_at": "1234567891",
-                            "settings": {"wallet.name": test_wallet_name},
+                            "settings": dict_setting_wallet_name,
                         }
                     )
                 ),
@@ -87,7 +97,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         return_value={
                             "wallet_id": test_wallet_id,
                             "created_at": "1234567892",
-                            "settings": {"wallet.name": test_wallet_name},
+                            "settings": dict_setting_wallet_name,
                         }
                     )
                 ),
@@ -129,7 +139,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                         return_value={
                             "wallet_id": test_wallet_id,
                             "created_at": "1234567890",
-                            "settings": {"wallet.name": test_wallet_name},
+                            "settings": dict_setting_wallet_name,
                         }
                     ),
                 ),
@@ -145,7 +155,7 @@ class TestMultitenantRoutes(AsyncTestCase):
                             "group_id": test_group_id,
                             "wallet_id": test_wallet_id,
                             "created_at": "1234567890",
-                            "settings": {"wallet.name": test_wallet_name},
+                            "settings": dict_setting_wallet_name,
                         }
                     ]
                 }
@@ -154,7 +164,7 @@ class TestMultitenantRoutes(AsyncTestCase):
     async def test_wallet_create(self):
         body = {
             "wallet_name": test_wallet_name,
-            "default_label": "test_label",
+            "default_label": test_label,
             "wallet_type": "indy",
             "wallet_key": test_key,
             "key_management_mode": "managed",
@@ -185,9 +195,9 @@ class TestMultitenantRoutes(AsyncTestCase):
 
             self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
                 {
-                    "wallet.name": body["wallet_name"],
+                    setting_wallet_name: body["wallet_name"],
                     "wallet.type": body["wallet_type"],
-                    "wallet.key": body["wallet_key"],
+                    setting_wallet_key: body["wallet_key"],
                     "wallet.webhook_urls": body["wallet_webhook_urls"],
                     "wallet.dispatch_type": body["wallet_dispatch_type"],
                 },
@@ -222,8 +232,8 @@ class TestMultitenantRoutes(AsyncTestCase):
             "wallet_key_derivation": "ARGON2I_MOD",
             "wallet_webhook_urls": [],
             "wallet_dispatch_type": "base",
-            "label": "my_test_label",
-            "image_url": "https://image.com",
+            "label": test_label,
+            "image_url": test_image_url,
         }
         self.request.json = async_mock.CoroutineMock(return_value=body)
 
@@ -234,9 +244,9 @@ class TestMultitenantRoutes(AsyncTestCase):
             await test_module.wallet_create(self.request)
             self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
                 {
-                    "wallet.name": body["wallet_name"],
+                    setting_wallet_name: body["wallet_name"],
                     "wallet.type": "in_memory",
-                    "wallet.key": body["wallet_key"],
+                    setting_wallet_key: body["wallet_key"],
                     "default_label": body["label"],
                     "image_url": body["image_url"],
                     "wallet.webhook_urls": body["wallet_webhook_urls"],
@@ -262,8 +272,8 @@ class TestMultitenantRoutes(AsyncTestCase):
             self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
                 {
                     "wallet.type": "in_memory",
-                    "wallet.name": body["wallet_name"],
-                    "wallet.key": body["wallet_key"],
+                    setting_wallet_name: body["wallet_name"],
+                    setting_wallet_key: body["wallet_key"],
                     "wallet.key_derivation_method": body["wallet_key_derivation"],
                     "wallet.webhook_urls": [],
                     "wallet.dispatch_type": "base",
@@ -276,8 +286,8 @@ class TestMultitenantRoutes(AsyncTestCase):
         body = {
             "wallet_webhook_urls": ["test-webhook-url"],
             "wallet_dispatch_type": "default",
-            "label": "test-label",
-            "image_url": "test-image-url",
+            "label": test_label,
+            "image_url": test_image_url,
         }
         self.request.json = async_mock.CoroutineMock(return_value=body)
 
@@ -319,8 +329,8 @@ class TestMultitenantRoutes(AsyncTestCase):
     async def test_wallet_update_no_wallet_webhook_urls(self):
         self.request.match_info = {"wallet_id": test_wallet_id}
         body = {
-            "label": "test-label",
-            "image_url": "test-image-url",
+            "label": test_label,
+            "image_url": test_image_url,
         }
         self.request.json = async_mock.CoroutineMock(return_value=body)
 
@@ -361,8 +371,8 @@ class TestMultitenantRoutes(AsyncTestCase):
         self.request.match_info = {"wallet_id": test_wallet_id}
         body = {
             "wallet_webhook_urls": [],
-            "label": "test-label",
-            "image_url": "test-image-url",
+            "label": test_label,
+            "image_url": test_image_url,
         }
         self.request.json = async_mock.CoroutineMock(return_value=body)
 
@@ -405,8 +415,8 @@ class TestMultitenantRoutes(AsyncTestCase):
         self.request.match_info = {"wallet_id": test_wallet_id}
         body = {
             "wallet_webhook_urls": ["test-webhook-url"],
-            "label": "test-label",
-            "image_url": "test-image-url",
+            "label": test_label,
+            "image_url": test_image_url,
         }
         self.request.json = async_mock.CoroutineMock(return_value=body)
 
@@ -429,7 +439,7 @@ class TestMultitenantRoutes(AsyncTestCase):
 
     async def test_wallet_update_not_found(self):
         self.request.match_info = {"wallet_id": test_wallet_id}
-        body = {"label": "test-label"}
+        body = {"label": test_label}
         self.request.json = async_mock.CoroutineMock(return_value=body)
         self.mock_multitenant_mgr.update_wallet = async_mock.CoroutineMock(
             side_effect=StorageNotFoundError()
