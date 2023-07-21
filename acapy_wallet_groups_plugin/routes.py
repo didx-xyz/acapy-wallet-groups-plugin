@@ -14,28 +14,27 @@ from aiohttp_apispec import (
     request_schema,
     response_schema,
 )
-from marshmallow import fields
-
-from aries_cloudagent.multitenant.admin.routes import (
-    UpdateWalletRequestSchema,
-    CreateWalletRequestSchema,
-    WalletIdMatchInfoSchema,
-    WalletListQueryStringSchema,
-    wallet_update,
-    wallet_create_token,
-    wallet_remove,
-    WalletListSchema,
-    CreateWalletResponseSchema,
-    WalletSettingsError
-)
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.multitenant.base import BaseMultitenantManager, BaseError
+from aries_cloudagent.multitenant.admin.routes import (
+    CreateWalletRequestSchema,
+    CreateWalletResponseSchema,
+    UpdateWalletRequestSchema,
+    WalletIdMatchInfoSchema,
+    WalletListQueryStringSchema,
+    WalletListSchema,
+    WalletSettingsError,
+    wallet_create_token,
+    wallet_remove,
+    wallet_update,
+)
+from aries_cloudagent.multitenant.base import BaseError, BaseMultitenantManager
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.wallet.models.wallet_record import (
     WalletRecord,
     WalletRecordSchema,
 )
+from marshmallow import fields
 
 
 def format_wallet_record(wallet_record: WalletRecord):
@@ -227,7 +226,8 @@ async def wallet_update(request: web.BaseRequest):
     group_id = body.get("group_id")
 
     if all(
-        v is None for v in (wallet_webhook_urls, wallet_dispatch_type, label, image_url, group_id)
+        v is None
+        for v in (wallet_webhook_urls, wallet_dispatch_type, label, image_url, group_id)
     ):
         raise web.HTTPBadRequest(reason="At least one parameter is required.")
 
@@ -247,7 +247,6 @@ async def wallet_update(request: web.BaseRequest):
         settings["default_label"] = label
     if image_url is not None:
         settings["image_url"] = image_url
-
 
     try:
         multitenant_mgr = context.profile.inject(BaseMultitenantManager)
