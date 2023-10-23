@@ -8,19 +8,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # See https://github.com/actions/runner-images/issues/6185
       - name: Install keyring for python
         run: sudo apt install gnome-keyring
 
       - name: Set up Python 3.9.12
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9.12
 
       - name: Set up Poetry
-        uses: abatilo/actions-poetry@v2.0.0
+        uses: abatilo/actions-poetry@v2.3.0
         with:
           poetry-version: 1.4.1
 
