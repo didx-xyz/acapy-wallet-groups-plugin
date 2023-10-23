@@ -24,6 +24,7 @@ from aries_cloudagent.multitenant.admin.routes import (
     WalletListQueryStringSchema,
     WalletListSchema,
     WalletSettingsError,
+    get_extra_settings_dict_per_tenant,
     wallet_create_token,
     wallet_remove,
     wallet_update,
@@ -159,6 +160,7 @@ async def wallet_create(request: web.BaseRequest):
     group_id = body.get("group_id")
     wallet_webhook_urls = body.get("wallet_webhook_urls") or []
     wallet_dispatch_type = body.get("wallet_dispatch_type") or "default"
+    extra_settings = body.get("extra_settings") or {}
     # If no webhooks specified, then dispatch only to base webhook targets
     if wallet_webhook_urls == []:
         wallet_dispatch_type = "base"
@@ -170,6 +172,8 @@ async def wallet_create(request: web.BaseRequest):
         "wallet.webhook_urls": wallet_webhook_urls,
         "wallet.dispatch_type": wallet_dispatch_type,
     }
+    extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings)
+    settings.update(extra_subwallet_setting)
 
     label = body.get("label")
     image_url = body.get("image_url")
@@ -228,6 +232,7 @@ async def wallet_update(request: web.BaseRequest):
     label = body.get("label")
     image_url = body.get("image_url")
     group_id = body.get("group_id")
+    extra_settings = body.get("extra_settings") or {}
 
     if all(
         v is None
@@ -251,6 +256,8 @@ async def wallet_update(request: web.BaseRequest):
         settings["default_label"] = label
     if image_url is not None:
         settings["image_url"] = image_url
+    extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings)
+    settings.update(extra_subwallet_setting)
 
     try:
         multitenant_mgr = context.profile.inject(BaseMultitenantManager)
