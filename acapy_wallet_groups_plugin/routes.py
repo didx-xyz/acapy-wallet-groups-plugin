@@ -53,7 +53,7 @@ def format_wallet_record(wallet_record: WalletRecord):
     return wallet_info
 
 
-class CreateWalletRequestSchemaWithGroupId(CreateWalletRequestSchema):
+class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema):
     """Request schema for adding a new wallet which will be registered by the agent."""
 
     group_id = fields.Str(
@@ -61,7 +61,7 @@ class CreateWalletRequestSchemaWithGroupId(CreateWalletRequestSchema):
     )
 
 
-class WalletListQueryStringSchemaWithGroupId(WalletListQueryStringSchema):
+class WalletListQueryStringWithGroupIdSchema(WalletListQueryStringSchema):
     """Parameters and validators for wallet list request query string."""
 
     group_id = fields.Str(
@@ -69,7 +69,7 @@ class WalletListQueryStringSchemaWithGroupId(WalletListQueryStringSchema):
     )
 
 
-class UpdateWalletRequestSchemaWithGroupId(UpdateWalletRequestSchema):
+class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema):
     """Request schema for updating a existing wallet."""
 
     group_id = fields.Str(
@@ -78,7 +78,7 @@ class UpdateWalletRequestSchemaWithGroupId(UpdateWalletRequestSchema):
 
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
-@querystring_schema(WalletListQueryStringSchemaWithGroupId())
+@querystring_schema(WalletListQueryStringWithGroupIdSchema())
 @response_schema(WalletListSchema(), 200, description="")
 async def wallets_list(request: web.BaseRequest):
     """
@@ -142,7 +142,7 @@ async def wallet_get(request: web.BaseRequest):
 
 
 @docs(tags=["multitenancy"], summary="Create a subwallet")
-@request_schema(CreateWalletRequestSchemaWithGroupId)
+@request_schema(CreateWalletRequestWithGroupIdSchema)
 @response_schema(CreateWalletResponseSchema(), 200, description="")
 async def wallet_create(request: web.BaseRequest):
     """
@@ -213,7 +213,7 @@ async def wallet_create(request: web.BaseRequest):
 
 @docs(tags=["multitenancy"], summary="Update a subwallet")
 @match_info_schema(WalletIdMatchInfoSchema())
-@request_schema(UpdateWalletRequestSchemaWithGroupId)
+@request_schema(UpdateWalletRequestWithGroupIdSchema)
 @response_schema(WalletRecordSchema(), 200, description="")
 async def wallet_update(request: web.BaseRequest):
     """
