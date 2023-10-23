@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -18,15 +18,15 @@ jobs:
       - name: Install keyring for python
         run: sudo apt install gnome-keyring
 
-      - name: Set up Python 3.9.12
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.9.18
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.9.12
+          python-version: 3.9.18
 
       - name: Set up Poetry
-        uses: abatilo/actions-poetry@v2.0.0
+        uses: abatilo/actions-poetry@v2.3.0
         with:
-          poetry-version: 1.4.1
+          poetry-version: 1.6.1
 
       - name: Install dependencies
         run: poetry install --with dev

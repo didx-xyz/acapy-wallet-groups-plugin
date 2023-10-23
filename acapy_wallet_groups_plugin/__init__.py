@@ -3,7 +3,7 @@
 from aries_cloudagent.admin.request_context import InjectionContext
 from aries_cloudagent.wallet.models.wallet_record import WalletRecord
 
-__version__ = "0.1.8"
+__version__ = "0.4.2"
 
 # ------------------------------------------
 # The code below done because ACA-Py, version 0.7.4 does not support custom

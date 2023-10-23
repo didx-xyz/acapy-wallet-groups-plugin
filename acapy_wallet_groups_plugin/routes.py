@@ -1,7 +1,7 @@
 """
     Multitenant admin routes.
 
-    This file has been copied from: https://github.com/hyperledger/aries-cloudagent-python/blob/d407c48cc9f041c5b27ee8f589fc0e2eaef2220d/aries_cloudagent/multitenant/admin/routes.py
+    This file has been copied from: https://github.com/hyperledger/aries-cloudagent-python/blob/0.9.0/aries_cloudagent/multitenant/admin/routes.py
 
     We do this because we want to override two endpoints
 """
@@ -24,6 +24,7 @@ from aries_cloudagent.multitenant.admin.routes import (
     WalletListQueryStringSchema,
     WalletListSchema,
     WalletSettingsError,
+    get_extra_settings_dict_per_tenant,
     wallet_create_token,
     wallet_remove,
     wallet_update,
@@ -52,22 +53,32 @@ def format_wallet_record(wallet_record: WalletRecord):
     return wallet_info
 
 
-class AcaPyCreateWalletRequestSchema(CreateWalletRequestSchema):
+class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema):
     """Request schema for adding a new wallet which will be registered by the agent."""
 
-    # TODO: determine the example for the group identifier
-    group_id = fields.Str(description="Wallet group identifier.", example="NL")
+    group_id = fields.Str(
+        description="Wallet group identifier.", example="some_group_id"
+    )
 
 
-class AcaPyWalletListQueryStringSchema(WalletListQueryStringSchema):
+class WalletListQueryStringWithGroupIdSchema(WalletListQueryStringSchema):
     """Parameters and validators for wallet list request query string."""
 
-    # TODO: determine the example for the group identifier
-    group_id = fields.Str(description="Wallet group identifier", example="NL")
+    group_id = fields.Str(
+        description="Wallet group identifier", example="some_group_id"
+    )
+
+
+class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema):
+    """Request schema for updating a existing wallet."""
+
+    group_id = fields.Str(
+        description="Wallet group identifier.", example="some_group_id"
+    )
 
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
-@querystring_schema(AcaPyWalletListQueryStringSchema())
+@querystring_schema(WalletListQueryStringWithGroupIdSchema())
 @response_schema(WalletListSchema(), 200, description="")
 async def wallets_list(request: web.BaseRequest):
     """
@@ -131,7 +142,7 @@ async def wallet_get(request: web.BaseRequest):
 
 
 @docs(tags=["multitenancy"], summary="Create a subwallet")
-@request_schema(AcaPyCreateWalletRequestSchema)
+@request_schema(CreateWalletRequestWithGroupIdSchema)
 @response_schema(CreateWalletResponseSchema(), 200, description="")
 async def wallet_create(request: web.BaseRequest):
     """
@@ -149,6 +160,7 @@ async def wallet_create(request: web.BaseRequest):
     group_id = body.get("group_id")
     wallet_webhook_urls = body.get("wallet_webhook_urls") or []
     wallet_dispatch_type = body.get("wallet_dispatch_type") or "default"
+    extra_settings = body.get("extra_settings") or {}
     # If no webhooks specified, then dispatch only to base webhook targets
     if wallet_webhook_urls == []:
         wallet_dispatch_type = "base"
@@ -160,6 +172,8 @@ async def wallet_create(request: web.BaseRequest):
         "wallet.webhook_urls": wallet_webhook_urls,
         "wallet.dispatch_type": wallet_dispatch_type,
     }
+    extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings)
+    settings.update(extra_subwallet_setting)
 
     label = body.get("label")
     image_url = body.get("image_url")
@@ -197,15 +211,9 @@ async def wallet_create(request: web.BaseRequest):
     return web.json_response(result)
 
 
-class AcaPyUpdateWalletRequestSchema(UpdateWalletRequestSchema):
-    """Request schema for updating a existing wallet."""
-
-    group_id = fields.Str(description="Wallet group identifier.", example="NL")
-
-
 @docs(tags=["multitenancy"], summary="Update a subwallet")
 @match_info_schema(WalletIdMatchInfoSchema())
-@request_schema(AcaPyUpdateWalletRequestSchema)
+@request_schema(UpdateWalletRequestWithGroupIdSchema)
 @response_schema(WalletRecordSchema(), 200, description="")
 async def wallet_update(request: web.BaseRequest):
     """
@@ -224,6 +232,7 @@ async def wallet_update(request: web.BaseRequest):
     label = body.get("label")
     image_url = body.get("image_url")
     group_id = body.get("group_id")
+    extra_settings = body.get("extra_settings") or {}
 
     if all(
         v is None
@@ -247,6 +256,8 @@ async def wallet_update(request: web.BaseRequest):
         settings["default_label"] = label
     if image_url is not None:
         settings["image_url"] = image_url
+    extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings)
+    settings.update(extra_subwallet_setting)
 
     try:
         multitenant_mgr = context.profile.inject(BaseMultitenantManager)
