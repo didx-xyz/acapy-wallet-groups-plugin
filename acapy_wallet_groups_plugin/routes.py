@@ -1,7 +1,7 @@
 """
     Multitenant admin routes.
 
-    This file has been copied from: https://github.com/hyperledger/aries-cloudagent-python/blob/0.10.1/aries_cloudagent/multitenant/admin/routes.py
+    This file has been copied from: https://github.com/hyperledger/aries-cloudagent-python/blob/0.10.2/aries_cloudagent/multitenant/admin/routes.py
 
     We do this because we want to override two endpoints
 """
