@@ -191,13 +191,13 @@ yaml = ["PyYAML (>=3.10)"]
 
 [[package]]
 name = "aries-cloudagent"
-version = "0.10.4"
+version = "0.10.5"
 description = ""
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "aries_cloudagent-0.10.4-py3-none-any.whl", hash = "sha256:1e89e89de93021cc8813e0fbdbfcacdbd48bfde181797d08c98fa83c48546fb1"},
-    {file = "aries_cloudagent-0.10.4.tar.gz", hash = "sha256:e74a3095b7cb08f8f9b0ab90bf55b77404424800391688858e292fb6670b6596"},
+    {file = "aries_cloudagent-0.10.5-py3-none-any.whl", hash = "sha256:46bc1a091685ab30b73dc1d8a716ed03cb8d5b1cbba831f7022b432fbb7f6dc5"},
+    {file = "aries_cloudagent-0.10.5.tar.gz", hash = "sha256:9fcf29e93acfb5a99b6192891ecd69159f12c38a912bacc24ae85a9d968d6d70"},
 ]
 
 [package.dependencies]
@@ -2027,13 +2027,13 @@ test = ["hypothesis (==3.56.5)", "pytest (==3.3.2)", "tox (>=2.9.1,<3)"]
 
 [[package]]
 name = "setuptools"
-version = "69.0.1"
+version = "69.0.2"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "setuptools-69.0.1-py3-none-any.whl", hash = "sha256:6875bbd06382d857b1b90cd07cee6a2df701a164f241095706b5192bc56c5c62"},
-    {file = "setuptools-69.0.1.tar.gz", hash = "sha256:f25195d54deb649832182d6455bffba7ac3d8fe71d35185e738d2198a4310044"},
+    {file = "setuptools-69.0.2-py3-none-any.whl", hash = "sha256:1e8fdff6797d3865f37397be788a4e3cba233608e9b509382a2777d25ebde7f2"},
+    {file = "setuptools-69.0.2.tar.gz", hash = "sha256:735896e78a4742605974de002ac60562d286fa8051a7e2299445e8e8fbb01aa6"},
 ]
 
 [package.extras]
@@ -2246,13 +2246,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "wcwidth"
-version = "0.2.11"
+version = "0.2.12"
 description = "Measures the displayed width of unicode strings in a terminal"
 optional = false
 python-versions = "*"
 files = [
-    {file = "wcwidth-0.2.11-py2.py3-none-any.whl", hash = "sha256:c4b153acf29f1f0d7fb1b00d097cce82b73de7a2016321c8d7ca71bd76dd848b"},
-    {file = "wcwidth-0.2.11.tar.gz", hash = "sha256:25eb3ecbec328cdb945f56f2a7cfe784bdf7a73a8197398c7a7c65e7fe93e9ae"},
+    {file = "wcwidth-0.2.12-py2.py3-none-any.whl", hash = "sha256:f26ec43d96c8cbfed76a5075dac87680124fa84e0855195a6184da9c187f133c"},
+    {file = "wcwidth-0.2.12.tar.gz", hash = "sha256:f01c104efdf57971bcb756f054dd58ddec5204dd15fa31d6503ea57947d97c02"},
 ]
 
 [[package]]
@@ -2384,4 +2384,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<4.0.0"
-content-hash = "83885ff4a67771ecf352b9c30f8665f1a787e60ae0ff895c78c5f98db8ff20ac"
+content-hash = "4d7aeb583ceb6368f19863e7def1d97263c0dbd89e6b82525b26104a4744f396"
