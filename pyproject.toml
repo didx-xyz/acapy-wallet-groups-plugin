@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "acapy_wallet_groups_plugin"
-version = "0.6.0"
+version = "0.6.1"
 description = "Agent plugin to add a group id to a wallet"
 authors = ["Berend Sliedrecht <berend@animo.id>"]
 packages = [{ include = "acapy_wallet_groups_plugin" }]
@@ -9,13 +9,12 @@ packages = [{ include = "acapy_wallet_groups_plugin" }]
 python = ">=3.9.0,<4.0.0"
 aries-cloudagent = "0.11.0"
 aiohttp = "^3.8.4"
-marshmallow = "^3.19.0"
+marshmallow = "^3.20.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.0.0"
 pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.1.0"
-pylint = "^3.0.2"
 asynctest = "^0.13.0"
 
 [build-system]

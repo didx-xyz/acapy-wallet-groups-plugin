@@ -38,6 +38,25 @@ from aries_cloudagent.wallet.models.wallet_record import (
 from marshmallow import fields
 
 
+# Deduplicate GroupId field definition, to append to following OpenApiSchema classes
+class GroupId:
+    group_id_field = fields.Str(
+        metadata={"description": "Wallet group identifier.", "example": "some_group_id"}
+    )
+
+
+class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema, GroupId):
+    """Request schema for adding a new wallet which will be registered by the agent."""
+
+
+class WalletListQueryStringWithGroupIdSchema(WalletListQueryStringSchema, GroupId):
+    """Parameters and validators for wallet list request query string."""
+
+
+class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema, GroupId):
+    """Request schema for updating a existing wallet."""
+
+
 def format_wallet_record(wallet_record: WalletRecord):
     """Serialize a WalletRecord object."""
 
@@ -51,30 +70,6 @@ def format_wallet_record(wallet_record: WalletRecord):
         wallet_info["group_id"] = wallet_record.group_id
 
     return wallet_info
-
-
-class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema):
-    """Request schema for adding a new wallet which will be registered by the agent."""
-
-    group_id = fields.Str(
-        description="Wallet group identifier.", example="some_group_id"
-    )
-
-
-class WalletListQueryStringWithGroupIdSchema(WalletListQueryStringSchema):
-    """Parameters and validators for wallet list request query string."""
-
-    group_id = fields.Str(
-        description="Wallet group identifier", example="some_group_id"
-    )
-
-
-class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema):
-    """Request schema for updating a existing wallet."""
-
-    group_id = fields.Str(
-        description="Wallet group identifier.", example="some_group_id"
-    )
 
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
