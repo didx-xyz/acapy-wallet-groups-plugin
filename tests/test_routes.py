@@ -245,7 +245,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
         }
         self.request.json = AsyncMock(return_value=body)
 
-        with patch.object(test_module.web, "json_response") as mock_response:
+        with patch.object(test_module.web, "json_response"):
             self.mock_multitenant_mgr.create_wallet = AsyncMock(
                 return_value=MagicMock()
             )
@@ -274,7 +274,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
         }
         self.request.json = AsyncMock(return_value=body)
 
-        with patch.object(test_module.web, "json_response") as mock_response:
+        with patch.object(test_module.web, "json_response"):
             self.mock_multitenant_mgr.create_wallet = AsyncMock(
                 return_value=MagicMock()
             )
@@ -432,7 +432,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
         }
         self.request.json = AsyncMock(return_value=body)
 
-        with patch.object(test_module.web, "json_response") as mock_response:
+        with patch.object(test_module.web, "json_response"):
             self.mock_multitenant_mgr.update_wallet = AsyncMock(
                 side_effect=test_module.WalletSettingsError("bad settings")
             )
