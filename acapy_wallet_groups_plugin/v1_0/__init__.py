@@ -1,9 +1,14 @@
 """Handles the initialization of the plugin."""
 
+import logging
+from importlib import metadata
+
 from aries_cloudagent.admin.request_context import InjectionContext
 from aries_cloudagent.wallet.models.wallet_record import WalletRecord
 
-__version__ = "0.5.0"
+LOGGER = logging.getLogger(__name__)
+
+__version__ = metadata.version("acapy_wallet_groups_plugin")
 
 # ------------------------------------------
 # The code below done because ACA-Py, version 0.7.4 does not support custom
@@ -37,3 +42,4 @@ async def setup(_: InjectionContext):
     Args:
         context (InjectionContext): Context injected by ACA-Py.
     """
+    LOGGER.info("ACA-Py Wallet Groups plugin set up.")
