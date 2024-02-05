@@ -4,8 +4,8 @@ COPY acapy_wallet_groups_plugin acapy_wallet_groups_plugin
 COPY config config
 
 USER root
-RUN chown indy:indy -R .
-USER indy
+RUN chown aries:aries -R .
+USER aries
 
 ENTRYPOINT [ "aca-py" ]
 CMD ["start", "--arg-file", "./config/defaults.yml", "--plugin-config", "./config/plugin.yml"]
