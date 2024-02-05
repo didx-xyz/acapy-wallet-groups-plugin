@@ -12,7 +12,7 @@ from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.wallet.models.wallet_record import WalletRecord
 from marshmallow.exceptions import ValidationError
 
-import acapy_wallet_groups_plugin.routes as test_module
+import acapy_wallet_groups_plugin.v1_0.routes as test_module
 
 test_created_at = 1234567890
 test_group_id = "test-group-id"
