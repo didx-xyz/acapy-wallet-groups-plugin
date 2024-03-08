@@ -180,6 +180,9 @@ async def wallet_create(request: web.BaseRequest):
     if key_derivation:  # allow lower levels to handle default
         settings["wallet.key_derivation_method"] = key_derivation
 
+    if group_id is not None:
+        settings["group_id"] = group_id  # add group_id to wallet settings
+
     try:
         multitenant_mgr = context.profile.inject(BaseMultitenantManager)
 
@@ -251,6 +254,10 @@ async def wallet_update(request: web.BaseRequest):
         settings["default_label"] = label
     if image_url is not None:
         settings["image_url"] = image_url
+
+    if group_id is not None:
+        settings["group_id"] = group_id  # add group_id to wallet settings
+
     extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings)
     settings.update(extra_subwallet_setting)
 
