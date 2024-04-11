@@ -8,6 +8,9 @@ packages = [{ include = "acapy_wallet_groups_plugin" }]
 [tool.poetry.dependencies]
 python = ">=3.9.0,<4.0.0"
 aries-cloudagent = "0.12.0"
+aries-askar = "~0.3.0"
+indy-vdr = "~0.4.0"
+anoncreds = "~0.2.0"
 aiohttp = "^3.8.4"
 marshmallow = "^3.20.2"
 
