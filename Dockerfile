@@ -1,4 +1,4 @@
-FROM ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.11.0
+FROM ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.0
 
 COPY acapy_wallet_groups_plugin acapy_wallet_groups_plugin
 COPY config config
