@@ -31,6 +31,12 @@ from aries_cloudagent.multitenant.admin.routes import (
 )
 from aries_cloudagent.multitenant.base import BaseError, BaseMultitenantManager
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
+from aries_cloudagent.utils.endorsement_setup import (
+    attempt_auto_author_with_endorser_setup,
+)
+from aries_cloudagent.utils.profiles import (
+    subwallet_type_not_same_as_base_wallet_raise_web_exception,
+)
 from aries_cloudagent.wallet.models.wallet_record import (
     WalletRecord,
     WalletRecordSchema,
@@ -76,8 +82,7 @@ def format_wallet_record(wallet_record: WalletRecord):
 @querystring_schema(WalletListQueryStringWithGroupIdSchema())
 @response_schema(WalletListSchema(), 200, description="")
 async def wallets_list(request: web.BaseRequest):
-    """
-    Request handler for listing all internal subwallets.
+    """Request handler for listing all internal subwallets.
 
     Args:
         request: aiohttp request object
@@ -109,8 +114,7 @@ async def wallets_list(request: web.BaseRequest):
 @match_info_schema(WalletIdMatchInfoSchema())
 @response_schema(WalletRecordSchema(), 200, description="")
 async def wallet_get(request: web.BaseRequest):
-    """
-    Request handler for getting a single subwallet.
+    """Request handler for getting a single subwallet.
 
     Args:
         request: aiohttp request object
@@ -140,8 +144,7 @@ async def wallet_get(request: web.BaseRequest):
 @request_schema(CreateWalletRequestWithGroupIdSchema)
 @response_schema(CreateWalletResponseSchema(), 200, description="")
 async def wallet_create(request: web.BaseRequest):
-    """
-    Request handler for adding a new subwallet for handling by the agent.
+    """Request handler for adding a new subwallet for handling by the agent.
 
     Args:
         request: aiohttp request object
@@ -149,6 +152,13 @@ async def wallet_create(request: web.BaseRequest):
 
     context: AdminRequestContext = request["context"]
     body = await request.json()
+
+    base_wallet_type = context.profile.settings.get("wallet.type")
+    sub_wallet_type = body.get("wallet_type", base_wallet_type)
+
+    subwallet_type_not_same_as_base_wallet_raise_web_exception(
+        base_wallet_type, sub_wallet_type
+    )
 
     key_management_mode = body.get("key_management_mode") or WalletRecord.MODE_MANAGED
     wallet_key = body.get("wallet_key")
@@ -161,7 +171,7 @@ async def wallet_create(request: web.BaseRequest):
         wallet_dispatch_type = "base"
 
     settings = {
-        "wallet.type": body.get("wallet_type") or "in_memory",
+        "wallet.type": sub_wallet_type,
         "wallet.name": body.get("wallet_name"),
         "wallet.key": wallet_key,
         "wallet.webhook_urls": wallet_webhook_urls,
@@ -199,6 +209,11 @@ async def wallet_create(request: web.BaseRequest):
                 await wallet_record.save(session)
 
         token = await multitenant_mgr.create_auth_token(wallet_record, wallet_key)
+
+        wallet_profile = await multitenant_mgr.get_wallet_profile(
+            context, wallet_record, extra_settings=settings
+        )
+        await attempt_auto_author_with_endorser_setup(wallet_profile)
     except BaseError as err:
         raise web.HTTPBadRequest(reason=err.roll_up) from err
 
@@ -214,8 +229,7 @@ async def wallet_create(request: web.BaseRequest):
 @request_schema(UpdateWalletRequestWithGroupIdSchema)
 @response_schema(WalletRecordSchema(), 200, description="")
 async def wallet_update(request: web.BaseRequest):
-    """
-    Request handler for updating a existing subwallet for handling by the agent.
+    """Request handler for updating a existing subwallet for handling by the agent.
 
     Args:
         request: aiohttp request object
@@ -230,11 +244,18 @@ async def wallet_update(request: web.BaseRequest):
     label = body.get("label")
     image_url = body.get("image_url")
     group_id = body.get("group_id")
-    extra_settings = body.get("extra_settings") or {}
+    extra_settings = body.get("extra_settings")
 
     if all(
         v is None
-        for v in (wallet_webhook_urls, wallet_dispatch_type, label, image_url, group_id)
+        for v in (
+            wallet_webhook_urls,
+            wallet_dispatch_type,
+            label,
+            image_url,
+            extra_settings,
+            group_id,
+        )
     ):
         raise web.HTTPBadRequest(reason="At least one parameter is required.")
 
@@ -258,7 +279,7 @@ async def wallet_update(request: web.BaseRequest):
     if group_id is not None:
         settings["wallet.group_id"] = group_id  # add group_id to wallet settings
 
-    extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings)
+    extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings or {})
     settings.update(extra_subwallet_setting)
 
     try:
