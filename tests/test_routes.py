@@ -1,7 +1,10 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from aries_cloudagent.admin.request_context import AdminRequestContext
+from aries_cloudagent.askar.profile import AskarProfile
+from aries_cloudagent.core.in_memory.profile import InMemoryProfile
 from aries_cloudagent.messaging.models.base import BaseModelError
 from aries_cloudagent.multitenant.base import (
     BaseMultitenantManager,
@@ -44,8 +47,15 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
         self.mock_multitenant_mgr.__aenter__ = AsyncMock(
             return_value=self.mock_multitenant_mgr
         )
+        self.profile = InMemoryProfile.test_profile(
+            settings={"wallet.type": "askar"},
+            profile_class=AskarProfile,
+        )
+        self.context = AdminRequestContext.test_context({}, self.profile)
+        self.request_dict = {
+            "context": self.context,
+        }
 
-        self.context = AdminRequestContext.test_context()
         self.context.profile.context.injector.bind_instance(
             BaseMultitenantManager, self.mock_multitenant_mgr
         )
@@ -169,17 +179,130 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 }
             )
 
+    @pytest.mark.asyncio(scope="module")
+    async def test_wallet_create_tenant_settings(self):
+        body = {
+            "wallet_name": "test",
+            "default_label": "test_label",
+            "wallet_type": "askar",
+            "wallet_key": "test",
+            "key_management_mode": "managed",
+            "wallet_webhook_urls": [],
+            "wallet_dispatch_type": "base",
+            "extra_settings": {
+                "ACAPY_LOG_LEVEL": "INFO",
+                "ACAPY_INVITE_PUBLIC": True,
+                "ACAPY_PUBLIC_INVITES": True,
+            },
+        }
+        self.request.json = AsyncMock(return_value=body)
+
+        test_module.attempt_auto_author_with_endorser_setup = AsyncMock()
+
+        with patch.object(test_module.web, "json_response") as mock_response:
+            wallet_mock = MagicMock(
+                serialize=MagicMock(
+                    return_value={
+                        "wallet_id": "test",
+                        "settings": {},
+                        "key_management_mode": body["key_management_mode"],
+                    }
+                )
+            )  # wallet_record
+            self.mock_multitenant_mgr.create_wallet = AsyncMock(
+                return_value=wallet_mock
+            )
+
+            self.mock_multitenant_mgr.create_auth_token = AsyncMock(
+                return_value="test_token"
+            )
+            self.mock_multitenant_mgr.get_wallet_profile = AsyncMock(
+                return_value=MagicMock()
+            )
+
+            await test_module.wallet_create(self.request)
+
+            self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
+                {
+                    "wallet.name": body["wallet_name"],
+                    "wallet.type": body["wallet_type"],
+                    "wallet.key": body["wallet_key"],
+                    "wallet.webhook_urls": body["wallet_webhook_urls"],
+                    "wallet.dispatch_type": body["wallet_dispatch_type"],
+                    "log.level": "INFO",
+                    "debug.invite_public": True,
+                    "public_invites": True,
+                },
+                body["key_management_mode"],
+            )
+            self.mock_multitenant_mgr.create_auth_token.assert_called_once_with(
+                wallet_mock, body["wallet_key"]
+            )
+            mock_response.assert_called_once_with(
+                {**test_module.format_wallet_record(wallet_mock), "token": "test_token"}
+            )
+            assert self.mock_multitenant_mgr.get_wallet_profile.called
+            assert test_module.attempt_auto_author_with_endorser_setup.called
+
+    async def test_wallet_create_wallet_type_different_from_base_wallet_raises_403(
+        self,
+    ):
+        body = {
+            "wallet_name": "test",
+            "default_label": "test_label",
+            "wallet_type": "askar",
+            "wallet_key": "test",
+            "key_management_mode": "managed",
+            "wallet_webhook_urls": [],
+            "wallet_dispatch_type": "base",
+        }
+        wallet_mock = MagicMock(
+            group_id=test_group_id,
+            serialize=MagicMock(
+                return_value={
+                    "wallet_id": "test",
+                    "settings": {},
+                    "key_management_mode": body["key_management_mode"],
+                }
+            ),
+        )
+        # wallet_record
+        self.mock_multitenant_mgr.create_wallet = AsyncMock(return_value=wallet_mock)
+
+        self.mock_multitenant_mgr.create_auth_token = AsyncMock(
+            return_value="test_token"
+        )
+        self.mock_multitenant_mgr.get_wallet_profile = AsyncMock(
+            return_value=MagicMock()
+        )
+        self.request.json = AsyncMock(return_value=body)
+
+        await test_module.wallet_create(self.request)
+
+        body["wallet_type"] = "askar-anoncreds"
+        with self.assertRaises(test_module.web.HTTPForbidden):
+            await test_module.wallet_create(self.request)
+
+        body["wallet_type"] = "indy"
+        with self.assertRaises(test_module.web.HTTPForbidden):
+            await test_module.wallet_create(self.request)
+
+        body["wallet_type"] = "in_memory"
+        with self.assertRaises(test_module.web.HTTPForbidden):
+            await test_module.wallet_create(self.request)
+
     async def test_wallet_create(self):
         body = {
             "wallet_name": test_wallet_name,
             "default_label": test_label,
-            "wallet_type": "indy",
+            "wallet_type": "askar",
             "wallet_key": test_key,
             "key_management_mode": "managed",
             "wallet_webhook_urls": [],
             "wallet_dispatch_type": "base",
         }
         self.request.json = AsyncMock(return_value=body)
+        test_module.attempt_auto_author_with_endorser_setup = AsyncMock()
 
         with patch.object(test_module.web, "json_response") as mock_response:
             wallet_mock = MagicMock(
@@ -196,9 +319,12 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
             )
 
             self.mock_multitenant_mgr.create_auth_token = AsyncMock(
-                return_value=test_token
+                return_value="test_token"
             )
-            print(self.request["context"])
+            self.mock_multitenant_mgr.get_wallet_profile = AsyncMock(
+                return_value=MagicMock()
+            )
+
             await test_module.wallet_create(self.request)
 
             self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
@@ -217,6 +343,8 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
             mock_response.assert_called_once_with(
                 {**test_module.format_wallet_record(wallet_mock), "token": test_token}
             )
+            assert self.mock_multitenant_mgr.get_wallet_profile.called
+            assert test_module.attempt_auto_author_with_endorser_setup.called
 
     async def test_wallet_create_x(self):
         body = {}
@@ -250,12 +378,15 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 return_value=MagicMock()
             )
             self.mock_multitenant_mgr.create_auth_token = AsyncMock()
+            self.mock_multitenant_mgr.get_wallet_profile = AsyncMock(
+                return_value=MagicMock()
+            )
 
             await test_module.wallet_create(self.request)
             self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
                 {
                     setting_wallet_name: body["wallet_name"],
-                    "wallet.type": "in_memory",
+                    "wallet.type": "askar",
                     setting_wallet_key: body["wallet_key"],
                     "default_label": body["label"],
                     "image_url": body["image_url"],
@@ -265,6 +396,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 },
                 WalletRecord.MODE_MANAGED,
             )
+            assert self.mock_multitenant_mgr.get_wallet_profile.called
 
     async def test_wallet_create_raw_key_derivation(self):
         body = {
@@ -279,11 +411,14 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 return_value=MagicMock()
             )
             self.mock_multitenant_mgr.create_auth_token = AsyncMock()
+            self.mock_multitenant_mgr.get_wallet_profile = AsyncMock(
+                return_value=MagicMock()
+            )
 
             await test_module.wallet_create(self.request)
             self.mock_multitenant_mgr.create_wallet.assert_called_once_with(
                 {
-                    "wallet.type": "in_memory",
+                    "wallet.type": "askar",
                     setting_wallet_name: body["wallet_name"],
                     setting_wallet_key: body["wallet_key"],
                     "wallet.key_derivation_method": body["wallet_key_derivation"],
@@ -291,6 +426,59 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                     "wallet.dispatch_type": "base",
                 },
                 WalletRecord.MODE_MANAGED,
+            )
+            assert self.mock_multitenant_mgr.get_wallet_profile.called
+
+    async def test_wallet_update_tenant_settings(self):
+        self.request.match_info = {"wallet_id": test_wallet_id}
+        body = {
+            "wallet_webhook_urls": ["test-webhook-url"],
+            "wallet_dispatch_type": "default",
+            "label": test_label,
+            "image_url": test_image_url,
+            "extra_settings": {
+                "ACAPY_LOG_LEVEL": "INFO",
+                "ACAPY_INVITE_PUBLIC": True,
+                "ACAPY_PUBLIC_INVITES": True,
+            },
+        }
+        self.request.json = AsyncMock(return_value=body)
+
+        with patch.object(test_module.web, "json_response") as mock_response:
+            settings = {
+                "wallet.webhook_urls": body["wallet_webhook_urls"],
+                "wallet.dispatch_type": body["wallet_dispatch_type"],
+                "default_label": body["label"],
+                "image_url": body["image_url"],
+                "log.level": "INFO",
+                "debug.invite_public": True,
+                "public_invites": True,
+            }
+            wallet_mock = MagicMock(
+                group_id=test_group_id,
+                serialize=MagicMock(
+                    return_value={
+                        "wallet_id": test_wallet_id,
+                        "settings": settings,
+                    }
+                ),
+            )
+            self.mock_multitenant_mgr.update_wallet = AsyncMock(
+                return_value=wallet_mock
+            )
+
+            await test_module.wallet_update(self.request)
+
+            self.mock_multitenant_mgr.update_wallet.assert_called_once_with(
+                test_wallet_id,
+                settings,
+            )
+            mock_response.assert_called_once_with(
+                {
+                    "wallet_id": test_wallet_id,
+                    "settings": settings,
+                    "group_id": test_group_id,
+                }
             )
 
     async def test_wallet_update(self):
@@ -583,6 +771,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 )
                 await test_module.wallet_create_token(self.request)
 
+    @pytest.mark.asyncio(scope="module")
     async def test_wallet_remove_managed(self):
         self.request.has_body = False
         self.request.match_info = {"wallet_id": test_wallet_id}
@@ -594,12 +783,13 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
         ):
             self.mock_multitenant_mgr.remove_wallet = AsyncMock()
 
-            await test_module.wallet_remove(self.request)
+            result = await test_module.wallet_remove(self.request)
 
             self.mock_multitenant_mgr.remove_wallet.assert_called_once_with(
                 test_wallet_id, None
             )
             mock_response.assert_called_once_with({})
+            assert result == mock_response.return_value
 
     async def test_wallet_remove_unmanaged(self):
         self.request.match_info = {"wallet_id": test_wallet_id}
@@ -612,12 +802,13 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
         ):
             self.mock_multitenant_mgr.remove_wallet = AsyncMock()
 
-            await test_module.wallet_remove(self.request)
+            result = await test_module.wallet_remove(self.request)
 
             self.mock_multitenant_mgr.remove_wallet.assert_called_once_with(
                 test_wallet_id, test_key
             )
             mock_response.assert_called_once_with({})
+            assert result == mock_response.return_value
 
     async def test_wallet_remove_managed_wallet_key_provided_throws(self):
         self.request.match_info = {"wallet_id": test_wallet_id}
