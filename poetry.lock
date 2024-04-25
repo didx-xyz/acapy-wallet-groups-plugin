@@ -142,15 +142,15 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "anoncreds"
-version = "0.2.0"
+version = "0.2.0.dev11"
 description = ""
 optional = false
 python-versions = ">=3.6.3"
 files = [
-    {file = "anoncreds-0.2.0-py3-none-macosx_10_9_universal2.whl", hash = "sha256:ec57e224d5f1b8749c3d6ff75bb61229a4f9c31df1ee863835f025c78ec10cd0"},
-    {file = "anoncreds-0.2.0-py3-none-manylinux2014_aarch64.whl", hash = "sha256:55dd0ad8c8611d2f6af158485dbd2f3c9524694ee4eaf1c5558973f1e436f943"},
-    {file = "anoncreds-0.2.0-py3-none-manylinux2014_x86_64.whl", hash = "sha256:6fb3b28e1f7c283ba27cb5d65ce3dd5303162e17c4311d69cb93402bfd2e3317"},
-    {file = "anoncreds-0.2.0-py3-none-win_amd64.whl", hash = "sha256:6c19d86117589ca5cc8f85637d62ebe077c52c34a5de9d1915f5e551458202b1"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-macosx_10_9_universal2.whl", hash = "sha256:23ef321b0244967db7cfa687c7e2f5dec498835793f98be878037872bf88efde"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-manylinux2014_aarch64.whl", hash = "sha256:f442c560578bdfb577aaaf51caf30df373df2eb61df47568806f9b78dc08ca7d"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-manylinux2014_x86_64.whl", hash = "sha256:5a515904ce8bf6ed39f9c20caf7955e986414d6e6153037c3e1223590111f0ca"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-win_amd64.whl", hash = "sha256:70002c9393edc5045ada6c7ba44fd868e99e46bd3b6a7e26c15171616a923688"},
 ]
 
 [[package]]
@@ -2372,4 +2372,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<4.0.0"
-content-hash = "5a4e0e88f84452f220b68d466f546328f5a73604180e9fd4f4f0488076e2d09a"
+content-hash = "3e665216057fcf88d1a95ee4704d7bd7df6de74566cadf110f9e035eaabf9b76"
