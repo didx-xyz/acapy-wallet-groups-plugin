@@ -289,9 +289,9 @@ async def wallet_update(request: web.BaseRequest):
         if group_id is not None:
             wallet_record.group_id = group_id
 
-        # Save the record with the new custom group_id
-        async with context.profile.session() as session:
-            await wallet_record.save(session)
+            # Save the record with the new custom group_id
+            async with context.profile.session() as session:
+                await wallet_record.save(session)
 
         result = format_wallet_record(wallet_record)
     except StorageNotFoundError as err:
