@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.askar.profile import AskarProfile
 from aries_cloudagent.core.in_memory.profile import InMemoryProfile
@@ -179,7 +178,6 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 }
             )
 
-    @pytest.mark.asyncio(scope="module")
     async def test_wallet_create_tenant_settings(self):
         body = {
             "wallet_name": "test",
@@ -771,7 +769,6 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 )
                 await test_module.wallet_create_token(self.request)
 
-    @pytest.mark.asyncio(scope="module")
     async def test_wallet_remove_managed(self):
         self.request.has_body = False
         self.request.match_info = {"wallet_id": test_wallet_id}
