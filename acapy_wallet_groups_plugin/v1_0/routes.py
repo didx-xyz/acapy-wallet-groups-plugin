@@ -30,6 +30,7 @@ from aries_cloudagent.multitenant.admin.routes import (
     wallet_update,
 )
 from aries_cloudagent.multitenant.base import BaseError, BaseMultitenantManager
+from aries_cloudagent.storage.base import DEFAULT_PAGE_SIZE
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.utils.endorsement_setup import (
     attempt_auto_author_with_endorser_setup,
@@ -99,9 +100,17 @@ async def wallets_list(request: web.BaseRequest):
     if group_id:
         query["group_id"] = group_id
 
+    limit = int(request.query.get("limit", DEFAULT_PAGE_SIZE))
+    offset = int(request.query.get("offset", 0))
+
     try:
         async with profile.session() as session:
-            records = await WalletRecord.query(session, tag_filter=query)
+            records = await WalletRecord.query(
+                session,
+                tag_filter=query,
+                limit=limit,
+                offset=offset,
+            )
         results = [format_wallet_record(record) for record in records]
         results.sort(key=lambda w: w["created_at"])
     except (StorageError, BaseModelError) as err:
