@@ -252,8 +252,8 @@ bbs = ["ursa-bbs-signatures (>=1.0.1,<1.1.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/ff137/aries-cloudagent-python.git"
-reference = "0.12.2rc0"
-resolved_reference = "a4506b852cce722e2d1be166e099903f21c375f4"
+reference = "feat/pagination"
+resolved_reference = "e465fa8ad1da6cf803a9f39cbabc1c57db7d36fd"
 
 [[package]]
 name = "async-timeout"
@@ -2414,4 +2414,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<4.0.0"
-content-hash = "b8f04628d9cd86b88b6935426782bdb2983659ae1bb3e1cc4f22bf7641f1f687"
+content-hash = "4007eea06fe06097e8b48d4fccbaee0a5420509f0e06b5a4adb7825ddf7d5fd2"
