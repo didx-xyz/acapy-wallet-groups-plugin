@@ -1,15 +1,16 @@
 [tool.poetry]
 name = "acapy_wallet_groups_plugin"
-version = "0.12.1"
+version = "0.12.2rc0"
 description = "Agent plugin to add a group id to a wallet"
 authors = ["Berend Sliedrecht <berend@animo.id>"]
 packages = [{ include = "acapy_wallet_groups_plugin" }]
 
 [tool.poetry.dependencies]
 python = ">=3.9.0,<4.0.0"
-aries-cloudagent = "0.12.1"
+aries-cloudagent = { git = "https://github.com/ff137/aries-cloudagent-python.git", tag = "0.12.2rc0" }
 aries-askar = "~0.3.0"
 indy-vdr = "~0.4.0"
+indy-credx = "~1.1.1"
 anoncreds = { version = "0.2.0", allow-prereleases = true }
 aiohttp = "^3.9.4"
 marshmallow = "^3.20.2"
