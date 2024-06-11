@@ -47,7 +47,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
             return_value=self.mock_multitenant_mgr
         )
         self.profile = InMemoryProfile.test_profile(
-            settings={"wallet.type": "askar"},
+            settings={"wallet.type": "askar", "admin.admin_insecure_mode": True},
             profile_class=AskarProfile,
         )
         self.context = AdminRequestContext.test_context({}, self.profile)
