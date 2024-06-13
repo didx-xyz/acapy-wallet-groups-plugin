@@ -204,7 +204,7 @@ cached-property = ">=1.5,<2.0"
 
 [[package]]
 name = "aries-cloudagent"
-version = "0.12.2rc0"
+version = "0.12.2b0"
 description = "Hyperledger Aries Cloud Agent Python (ACA-Py) is a foundation for building decentralized identity applications and services running in non-mobile environments. "
 optional = false
 python-versions = "^3.9"
@@ -253,7 +253,7 @@ bbs = ["ursa-bbs-signatures (>=1.0.1,<1.1.0)"]
 type = "git"
 url = "https://github.com/ff137/aries-cloudagent-python.git"
 reference = "test-fix-get-wallet-profile"
-resolved_reference = "52aede43c77cdf6a93e7732b763dec078b3518eb"
+resolved_reference = "e8e71001bac44f685916eb23fcf9138001719dad"
 
 [[package]]
 name = "async-timeout"
