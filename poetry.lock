@@ -252,8 +252,8 @@ bbs = ["ursa-bbs-signatures (>=1.0.1,<1.1.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/ff137/aries-cloudagent-python.git"
-reference = "test-fix-get-wallet-profile"
-resolved_reference = "e8e71001bac44f685916eb23fcf9138001719dad"
+reference = "test-fix-get-wallet-profile2"
+resolved_reference = "338072f2fc0887d50c71749a2a754dd5e93333d4"
 
 [[package]]
 name = "async-timeout"
@@ -2414,4 +2414,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<4.0.0"
-content-hash = "f6560da1c950b31b2ddf9e88547631602ebe4e62339cdaca835dfbec5add5cdc"
+content-hash = "23976bb7c39721b183dc37f04ebb9385c5b2542798d1c8c5844bed32e856002b"
