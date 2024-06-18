@@ -7,7 +7,7 @@ packages = [{ include = "acapy_wallet_groups_plugin" }]
 
 [tool.poetry.dependencies]
 python = ">=3.9.0,<4.0.0"
-aries-cloudagent = { git = "https://github.com/ff137/aries-cloudagent-python.git", branch = "feat/pagination" }
+aries-cloudagent = { git = "https://github.com/ff137/aries-cloudagent-python.git", branch = "feat/paginate-conn-cred-pres-records" }
 aries-askar = "~0.3.0"
 indy-vdr = "~0.4.0"
 indy-credx = "~1.1.1"
