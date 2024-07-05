@@ -18,15 +18,15 @@ jobs:
       - name: Install keyring for python
         run: sudo apt install gnome-keyring
 
-      - name: Set up Python 3.9.18
+      - name: Set up Python 3.12.4
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9.18
+          python-version: 3.12.4
 
       - name: Set up Poetry
         uses: abatilo/actions-poetry@v3.0.0
         with:
-          poetry-version: 1.6.1
+          poetry-version: 1.8.3
 
       - name: Install dependencies
         run: poetry install --with dev
