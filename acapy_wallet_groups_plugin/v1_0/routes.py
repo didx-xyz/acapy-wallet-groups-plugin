@@ -1,7 +1,7 @@
 """
     Multitenant admin routes.
 
-    This file has been copied from: https://github.com/hyperledger/aries-cloudagent-python/blob/1.0.0/aries_cloudagent/multitenant/admin/routes.py
+    This file has been copied from: https://github.com/ff137/aries-cloudagent-python/blob/feat/pagination-ordering/aries_cloudagent/multitenant/admin/routes.py
 
     We do this because we want to override two endpoints
 """
@@ -16,6 +16,7 @@ from aiohttp_apispec import (
 )
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.messaging.models.base import BaseModelError
+from aries_cloudagent.messaging.models.paginated_query import get_paginated_query_params
 from aries_cloudagent.multitenant.admin.routes import (
     CreateWalletRequestSchema,
     CreateWalletResponseSchema,
@@ -100,8 +101,7 @@ async def wallets_list(request: web.BaseRequest):
     if group_id:
         query["group_id"] = group_id
 
-    limit = int(request.query.get("limit", DEFAULT_PAGE_SIZE))
-    offset = int(request.query.get("offset", 0))
+    limit, offset, order_by, descending = get_paginated_query_params(request)
 
     try:
         async with profile.session() as session:
@@ -110,6 +110,8 @@ async def wallets_list(request: web.BaseRequest):
                 tag_filter=query,
                 limit=limit,
                 offset=offset,
+                order_by=order_by,
+                descending=descending,
             )
         results = [format_wallet_record(record) for record in records]
         results.sort(key=lambda w: w["created_at"])
