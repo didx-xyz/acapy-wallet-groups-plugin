@@ -250,7 +250,7 @@ did-peer-2 = "^0.1.2"
 did-peer-4 = "^0.1.4"
 ecdsa = "~0.19.0"
 jsonpath-ng = "1.6.1"
-Markdown = "~3.6"
+Markdown = "~3.7"
 markupsafe = "2.1.5"
 marshmallow = "~3.21.3"
 nest_asyncio = "~1.6.0"
@@ -272,7 +272,7 @@ unflatten = "~0.1"
 uuid_utils = "^0.9.0"
 
 [package.extras]
-askar = ["anoncreds (==0.2.0)", "aries-askar-ff137 (>=0.3.3b0,<0.4.0)", "indy-credx (>=1.1.1,<1.2.0)", "indy-vdr (>=0.4.0,<0.5.0)"]
+askar = ["anoncreds (==0.2.0)", "aries-askar-ff137 (>=0.3.3b1,<0.4.0)", "indy-credx (>=1.1.1,<1.2.0)", "indy-vdr (>=0.4.0,<0.5.0)"]
 bbs = ["ursa-bbs-signatures (>=1.0.1,<1.1.0)"]
 didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 
@@ -280,7 +280,7 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 type = "git"
 url = "https://github.com/ff137/aries-cloudagent-python.git"
 reference = "feat/pagination-ordering"
-resolved_reference = "90cd53cc3f736ffc85128975ffca4f8484950b75"
+resolved_reference = "63812f472c4b07336a81b4f8f4b3c071739f3c2b"
 
 [[package]]
 name = "async-timeout"
@@ -1335,13 +1335,13 @@ source = ["Cython (>=3.0.11)"]
 
 [[package]]
 name = "markdown"
-version = "3.6"
+version = "3.7"
 description = "Python implementation of John Gruber's Markdown."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Markdown-3.6-py3-none-any.whl", hash = "sha256:48f276f4d8cfb8ce6527c8f79e2ee29708508bf4d40aa410fbc3b4ee832c850f"},
-    {file = "Markdown-3.6.tar.gz", hash = "sha256:ed4f41f6daecbeeb96e576ce414c41d2d876daa9a16cb35fa8ed8c2ddfad0224"},
+    {file = "Markdown-3.7-py3-none-any.whl", hash = "sha256:7eb6df5690b81a1d7942992c97fad2938e956e79df20cbc6186e9c3a77b1c803"},
+    {file = "markdown-3.7.tar.gz", hash = "sha256:2ae2471477cfd02dbbf038d5d9bc226d40def84b4fe2986e49b59b6b472bbed2"},
 ]
 
 [package.extras]
