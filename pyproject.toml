@@ -7,7 +7,7 @@ packages = [{ include = "acapy_wallet_groups_plugin" }]
 
 [tool.poetry.dependencies]
 python = ">=3.12.0,<4.0.0"
-aries-cloudagent = { git = "https://github.com/ff137/aries-cloudagent-python.git", branch = "feat/pagination-ordering" }
+aries-cloudagent = { git = "https://github.com/didx-xyz/aries-cloudagent-python.git", tag = "1.0.0b0" }
 indy-vdr = "~0.4.0"
 indy-credx = "~1.1.1"
 anoncreds = { version = "0.2.0", allow-prereleases = true }
