@@ -120,7 +120,7 @@ class TestMultitenantRoutes(unittest.IsolatedAsyncioTestCase):
                 ),
             ]
             mock_wallet_record.query = AsyncMock()
-            mock_wallet_record.query.return_value = [wallets[2], wallets[0], wallets[1]]
+            mock_wallet_record.query.return_value = wallets
 
             await test_module.wallets_list(self.request)
             mock_response.assert_called_once_with(
