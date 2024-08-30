@@ -235,7 +235,7 @@ reference = "testpypi"
 
 [[package]]
 name = "aries-cloudagent"
-version = "1.0.0b0"
+version = "1.0.0b1"
 description = "Hyperledger Aries Cloud Agent Python (ACA-Py) is a foundation for building decentralized identity applications and services running in non-mobile environments. "
 optional = false
 python-versions = "^3.12"
@@ -285,7 +285,7 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 type = "git"
 url = "https://github.com/didx-xyz/aries-cloudagent-python.git"
 reference = "1.0.0b1"
-resolved_reference = "e36fe134f70b9b38df5b3c937f674ee41b4f0e14"
+resolved_reference = "73b76839983b99e25aff35d63e23ede6f580d4ea"
 
 [[package]]
 name = "async-timeout"
