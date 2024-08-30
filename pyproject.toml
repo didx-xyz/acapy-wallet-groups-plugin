@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "acapy_wallet_groups_plugin"
-version = "1.0.0b0"
+version = "1.0.0b1"
 description = "Agent plugin to add a group id to a wallet"
 authors = ["Berend Sliedrecht <berend@animo.id>"]
 packages = [{ include = "acapy_wallet_groups_plugin" }]
@@ -17,8 +17,13 @@ marshmallow = "^3.20.2"
 [tool.poetry.dev-dependencies]
 pytest = "^8.2.0"
 pytest-cov = "^5.0.0"
-aries-askar = "~0.3.0"
+aries-askar-ff137 = { version = "==0.3.3b0", source = "testpypi" }
 
 [build-system]
 requires = ["poetry-core>=1.7.0"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+priority = "supplemental"
