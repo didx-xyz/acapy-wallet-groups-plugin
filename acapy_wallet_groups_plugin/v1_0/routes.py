@@ -31,7 +31,6 @@ from aries_cloudagent.multitenant.admin.routes import (
     wallet_update,
 )
 from aries_cloudagent.multitenant.base import BaseError, BaseMultitenantManager
-from aries_cloudagent.storage.base import DEFAULT_PAGE_SIZE
 from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
 from aries_cloudagent.utils.endorsement_setup import (
     attempt_auto_author_with_endorser_setup,
