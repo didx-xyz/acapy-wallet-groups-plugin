@@ -1,23 +1,15 @@
 """
     Multitenant admin routes.
 
-    This file has been copied from: https://github.com/ff137/aries-cloudagent-python/blob/feat/pagination-ordering/aries_cloudagent/multitenant/admin/routes.py
+    This file has been copied from: https://github.com/didx-xyz/acapy/blob/1.1.1b0/acapy_agent/multitenant/admin/routes.py
 
     We do this because we want to override two endpoints
 """
 
-from aiohttp import web
-from aiohttp_apispec import (
-    docs,
-    match_info_schema,
-    querystring_schema,
-    request_schema,
-    response_schema,
-)
-from aries_cloudagent.admin.request_context import AdminRequestContext
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.messaging.models.paginated_query import get_paginated_query_params
-from aries_cloudagent.multitenant.admin.routes import (
+from acapy_agent.admin.request_context import AdminRequestContext
+from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.messaging.models.paginated_query import get_paginated_query_params
+from acapy_agent.multitenant.admin.routes import (
     CreateWalletRequestSchema,
     CreateWalletResponseSchema,
     UpdateWalletRequestSchema,
@@ -30,17 +22,20 @@ from aries_cloudagent.multitenant.admin.routes import (
     wallet_remove,
     wallet_update,
 )
-from aries_cloudagent.multitenant.base import BaseError, BaseMultitenantManager
-from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
-from aries_cloudagent.utils.endorsement_setup import (
-    attempt_auto_author_with_endorser_setup,
-)
-from aries_cloudagent.utils.profiles import (
+from acapy_agent.multitenant.base import BaseError, BaseMultitenantManager
+from acapy_agent.storage.error import StorageError, StorageNotFoundError
+from acapy_agent.utils.endorsement_setup import attempt_auto_author_with_endorser_setup
+from acapy_agent.utils.profiles import (
     subwallet_type_not_same_as_base_wallet_raise_web_exception,
 )
-from aries_cloudagent.wallet.models.wallet_record import (
-    WalletRecord,
-    WalletRecordSchema,
+from acapy_agent.wallet.models.wallet_record import WalletRecord, WalletRecordSchema
+from aiohttp import web
+from aiohttp_apispec import (
+    docs,
+    match_info_schema,
+    querystring_schema,
+    request_schema,
+    response_schema,
 )
 from marshmallow import fields
 

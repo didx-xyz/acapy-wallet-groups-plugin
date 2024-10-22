@@ -1,17 +1,14 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from aries_cloudagent.admin.request_context import AdminRequestContext
-from aries_cloudagent.askar.profile import AskarProfile
-from aries_cloudagent.core.in_memory.profile import InMemoryProfile
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.multitenant.base import (
-    BaseMultitenantManager,
-    MultitenantManagerError,
-)
-from aries_cloudagent.multitenant.error import WalletKeyMissingError
-from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
-from aries_cloudagent.wallet.models.wallet_record import WalletRecord
+from acapy_agent.admin.request_context import AdminRequestContext
+from acapy_agent.askar.profile import AskarProfile
+from acapy_agent.core.in_memory.profile import InMemoryProfile
+from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.multitenant.base import BaseMultitenantManager, MultitenantManagerError
+from acapy_agent.multitenant.error import WalletKeyMissingError
+from acapy_agent.storage.error import StorageError, StorageNotFoundError
+from acapy_agent.wallet.models.wallet_record import WalletRecord
 from marshmallow.exceptions import ValidationError
 
 import acapy_wallet_groups_plugin.v1_0.routes as test_module
