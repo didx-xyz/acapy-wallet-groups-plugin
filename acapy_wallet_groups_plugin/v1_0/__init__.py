@@ -3,8 +3,8 @@
 import logging
 from importlib import metadata
 
-from aries_cloudagent.admin.request_context import InjectionContext
-from aries_cloudagent.wallet.models.wallet_record import WalletRecord
+from acapy_agent.admin.request_context import InjectionContext
+from acapy_agent.wallet.models.wallet_record import WalletRecord
 
 LOGGER = logging.getLogger(__name__)
 
