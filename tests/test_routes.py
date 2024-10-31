@@ -5,8 +5,8 @@ from acapy_agent.admin.request_context import AdminRequestContext
 from acapy_agent.askar.profile import AskarProfile
 from acapy_agent.core.in_memory.profile import InMemoryProfile
 from acapy_agent.messaging.models.base import BaseModelError
-from acapy_agent.multitenant.base import BaseMultitenantManager, MultitenantManagerError
-from acapy_agent.multitenant.error import WalletKeyMissingError
+from acapy_agent.multitenant.base import BaseMultitenantManager
+from acapy_agent.multitenant.error import MultitenantManagerError, WalletKeyMissingError
 from acapy_agent.storage.error import StorageError, StorageNotFoundError
 from acapy_agent.wallet.models.wallet_record import WalletRecord
 from marshmallow.exceptions import ValidationError
