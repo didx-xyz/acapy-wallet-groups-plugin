@@ -25,7 +25,7 @@ ecdsa = "~0.19.0"
 jsonpath-ng = "1.7.0"
 Markdown = "~3.7"
 markupsafe = "2.1.5"
-marshmallow = "~3.23.0"
+marshmallow = "~3.23.1"
 nest_asyncio = "~1.6.0"
 packaging = "~23.2"
 portalocker = "~2.10.1"
@@ -52,8 +52,8 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/didx-xyz/acapy.git"
-reference = "test-refactor-multitenant-manager-errors"
-resolved_reference = "ce5c4e97a7cd4ab4353f02e5567ad19035614e4e"
+reference = "test-feat/handle-exceptions"
+resolved_reference = "a56b3363206e81da19a9a4977bf560507964d104"
 
 [[package]]
 name = "aiohappyeyeballs"
@@ -1431,13 +1431,13 @@ files = [
 
 [[package]]
 name = "marshmallow"
-version = "3.23.0"
+version = "3.23.1"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "marshmallow-3.23.0-py3-none-any.whl", hash = "sha256:82f20a2397834fe6d9611b241f2f7e7b680ed89c49f84728a1ad937be6b4bdf4"},
-    {file = "marshmallow-3.23.0.tar.gz", hash = "sha256:98d8827a9f10c03d44ead298d2e99c6aea8197df18ccfad360dae7f89a50da2e"},
+    {file = "marshmallow-3.23.1-py3-none-any.whl", hash = "sha256:fece2eb2c941180ea1b7fcbd4a83c51bfdd50093fdd3ad2585ee5e1df2508491"},
+    {file = "marshmallow-3.23.1.tar.gz", hash = "sha256:3a8dfda6edd8dcdbf216c0ede1d1e78d230a6dc9c5a088f58c4083b974a0d468"},
 ]
 
 [package.dependencies]
@@ -1445,7 +1445,7 @@ packaging = ">=17.0"
 
 [package.extras]
 dev = ["marshmallow[tests]", "pre-commit (>=3.5,<5.0)", "tox"]
-docs = ["alabaster (==1.0.0)", "autodocsumm (==0.2.13)", "sphinx (==8.1.3)", "sphinx-issues (==5.0.0)", "sphinx-version-warning (==1.1.2)"]
+docs = ["alabaster (==1.0.0)", "autodocsumm (==0.2.14)", "sphinx (==8.1.3)", "sphinx-issues (==5.0.0)", "sphinx-version-warning (==1.1.2)"]
 tests = ["pytest", "simplejson"]
 
 [[package]]
@@ -2555,4 +2555,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12.0,<4.0.0"
-content-hash = "63423a37759c92138663e8ba58009c784d2941a404ab27e285b64532786b223f"
+content-hash = "8607b5c46da35ee3ec7d2d8c9714fd145d5d94dffa32f61a56fd816d5705e72b"
