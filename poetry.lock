@@ -2,7 +2,7 @@
 
 [[package]]
 name = "acapy-agent"
-version = "1.1.1b3"
+version = "1.1.1b4"
 description = "(ACA-Py) A Cloud Agent Python is a foundation for building decentralized identity applications and services running in non-mobile environments. "
 optional = false
 python-versions = "^3.12"
@@ -53,7 +53,7 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 type = "git"
 url = "https://github.com/didx-xyz/acapy.git"
 reference = "test-feat/handle-exceptions"
-resolved_reference = "4cc9247ae96ec3c77144d9d454e9284b78801a6b"
+resolved_reference = "a5e9a0e464bcecd0a919a80d50cb3b7ca7808d49"
 
 [[package]]
 name = "aiohappyeyeballs"
