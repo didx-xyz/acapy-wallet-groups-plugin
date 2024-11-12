@@ -2,7 +2,7 @@
 
 [[package]]
 name = "acapy-agent"
-version = "1.1.1b2"
+version = "1.1.1b3"
 description = "(ACA-Py) A Cloud Agent Python is a foundation for building decentralized identity applications and services running in non-mobile environments. "
 optional = false
 python-versions = "^3.12"
@@ -52,8 +52,8 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/didx-xyz/acapy.git"
-reference = "1.1.1b2"
-resolved_reference = "38308c17d44310de3ba45838bc140d363c81c9f0"
+reference = "1.1.1b3"
+resolved_reference = "30ad5de1a5dc1a8f36cf267123910378769ee21e"
 
 [[package]]
 name = "aiohappyeyeballs"
@@ -2555,4 +2555,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12.0,<4.0.0"
-content-hash = "298f55e0eb2a38c817c39e93179b18b86893aab72fcd7b8ac08f23e42800278b"
+content-hash = "e3e11aa5cf5b9c59d456560938e4242bf348a1277da20bcc2ae5e145320a2390"
