@@ -7,6 +7,7 @@
 """
 
 from acapy_agent.admin.request_context import AdminRequestContext
+from acapy_agent.core.error import BaseError
 from acapy_agent.messaging.models.base import BaseModelError
 from acapy_agent.messaging.models.paginated_query import get_paginated_query_params
 from acapy_agent.multitenant.admin.routes import (
@@ -22,7 +23,7 @@ from acapy_agent.multitenant.admin.routes import (
     wallet_remove,
     wallet_update,
 )
-from acapy_agent.multitenant.base import BaseError, BaseMultitenantManager
+from acapy_agent.multitenant.base import BaseMultitenantManager
 from acapy_agent.storage.error import StorageError, StorageNotFoundError
 from acapy_agent.utils.endorsement_setup import attempt_auto_author_with_endorser_setup
 from acapy_agent.utils.profiles import (
