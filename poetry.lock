@@ -53,7 +53,7 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 type = "git"
 url = "https://github.com/didx-xyz/acapy.git"
 reference = "development"
-resolved_reference = "665700da3097c9f30fd921a1c69ac7e2f078cd8b"
+resolved_reference = "765e281a609f389166bcedc77abc2ef256de37fd"
 
 [[package]]
 name = "aiohappyeyeballs"
