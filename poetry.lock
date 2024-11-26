@@ -54,7 +54,7 @@ didcommv2 = ["didcomm-messaging (>=0.1.1a0,<0.2.0)"]
 type = "git"
 url = "https://github.com/didx-xyz/acapy.git"
 reference = "test-fix-runtime-warning"
-resolved_reference = "02d0745c0229ef1e69183bb7fc684167f071b16e"
+resolved_reference = "4d51cf5a10e4c073be08341346d0f04e576eff3d"
 
 [[package]]
 name = "aiofiles"
