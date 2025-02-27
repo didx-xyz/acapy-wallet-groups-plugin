@@ -26,9 +26,6 @@ from acapy_agent.multitenant.admin.routes import (
 from acapy_agent.multitenant.base import BaseMultitenantManager
 from acapy_agent.storage.error import StorageError, StorageNotFoundError
 from acapy_agent.utils.endorsement_setup import attempt_auto_author_with_endorser_setup
-from acapy_agent.utils.profiles import (
-    subwallet_type_not_same_as_base_wallet_raise_web_exception,
-)
 from acapy_agent.wallet.models.wallet_record import WalletRecord, WalletRecordSchema
 from aiohttp import web
 from aiohttp_apispec import (
@@ -160,10 +157,6 @@ async def wallet_create(request: web.BaseRequest):
 
     base_wallet_type = context.profile.settings.get("wallet.type")
     sub_wallet_type = body.get("wallet_type", base_wallet_type)
-
-    subwallet_type_not_same_as_base_wallet_raise_web_exception(
-        base_wallet_type, sub_wallet_type
-    )
 
     key_management_mode = body.get("key_management_mode") or WalletRecord.MODE_MANAGED
     wallet_key = body.get("wallet_key")
