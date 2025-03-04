@@ -8,8 +8,8 @@ repository = "https://github.com/didx-xyz/acapy-wallet-groups-plugin"
 
 [tool.poetry.dependencies]
 python = ">=3.12.0,<4.0.0"
-acapy-agent-didx = { version = "1.2.1-20250228", source = "testpypi" }
-# acapy-agent-didx = { git = "https://github.com/didx-xyz/acapy.git", branch = "release-1.2.1-20250228" }
+# acapy-agent-didx = { version = "1.2.1-20250228", source = "testpypi" }
+acapy-agent-didx = { git = "https://github.com/didx-xyz/acapy.git", branch = "test-present-indy-w-askar-anoncreds" }
 indy-vdr = "~0.4.0"
 indy-credx = "~1.1.1"
 anoncreds = { version = "0.2.0", allow-prereleases = true }
