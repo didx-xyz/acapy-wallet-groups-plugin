@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "acapy_wallet_groups_plugin"
-version = "1.2.1-20250228"
+version = "1.2.1-20250306"
 description = "Agent plugin to add a group id to a wallet"
 authors = ["Berend Sliedrecht <berend@animo.id>", "Mourits de Beer <ff137@proton.me>"]
 packages = [{ include = "acapy_wallet_groups_plugin" }]
