@@ -48,12 +48,24 @@ class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema, GroupId):
     """Request schema for adding a new wallet which will be registered by the agent."""
 
 
+class CreateWalletResponseWithGroupIdSchema(CreateWalletResponseSchema, GroupId):
+    """Response schema for creating a wallet."""
+
+
 class WalletListQueryStringWithGroupIdSchema(WalletListQueryStringSchema, GroupId):
     """Parameters and validators for wallet list request query string."""
 
 
 class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema, GroupId):
     """Request schema for updating a existing wallet."""
+
+
+class WalletListWithGroupIdSchema(WalletListSchema, GroupId):
+    """Result schema for wallet list."""
+
+
+class WalletRecordWithGroupIdSchema(WalletRecordSchema, GroupId):
+    """Schema to allow serialization/deserialization of record."""
 
 
 def format_wallet_record(wallet_record: WalletRecord):
@@ -73,7 +85,7 @@ def format_wallet_record(wallet_record: WalletRecord):
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
 @querystring_schema(WalletListQueryStringWithGroupIdSchema())
-@response_schema(WalletListSchema(), 200, description="")
+@response_schema(WalletListWithGroupIdSchema(), 200, description="")
 async def wallets_list(request: web.BaseRequest):
     """Request handler for listing all internal subwallets.
 
@@ -113,7 +125,7 @@ async def wallets_list(request: web.BaseRequest):
 
 @docs(tags=["multitenancy"], summary="Get a single subwallet")
 @match_info_schema(WalletIdMatchInfoSchema())
-@response_schema(WalletRecordSchema(), 200, description="")
+@response_schema(WalletRecordWithGroupIdSchema(), 200, description="")
 async def wallet_get(request: web.BaseRequest):
     """Request handler for getting a single subwallet.
 
@@ -143,7 +155,7 @@ async def wallet_get(request: web.BaseRequest):
 
 @docs(tags=["multitenancy"], summary="Create a subwallet")
 @request_schema(CreateWalletRequestWithGroupIdSchema)
-@response_schema(CreateWalletResponseSchema(), 200, description="")
+@response_schema(CreateWalletResponseWithGroupIdSchema(), 200, description="")
 async def wallet_create(request: web.BaseRequest):
     """Request handler for adding a new subwallet for handling by the agent.
 
@@ -224,7 +236,7 @@ async def wallet_create(request: web.BaseRequest):
 @docs(tags=["multitenancy"], summary="Update a subwallet")
 @match_info_schema(WalletIdMatchInfoSchema())
 @request_schema(UpdateWalletRequestWithGroupIdSchema)
-@response_schema(WalletRecordSchema(), 200, description="")
+@response_schema(WalletRecordWithGroupIdSchema(), 200, description="")
 async def wallet_update(request: web.BaseRequest):
     """Request handler for updating a existing subwallet for handling by the agent.
 
