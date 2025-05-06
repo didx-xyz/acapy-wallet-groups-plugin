@@ -21,7 +21,6 @@ from acapy_agent.multitenant.admin.routes import (
     get_extra_settings_dict_per_tenant,
     wallet_create_token,
     wallet_remove,
-    wallet_update,
 )
 from acapy_agent.multitenant.base import BaseMultitenantManager
 from acapy_agent.storage.error import StorageError, StorageNotFoundError
