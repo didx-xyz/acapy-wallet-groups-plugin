@@ -9,6 +9,7 @@ We do this because we want to override 4 endpoints - create, update, list, get
 from acapy_agent.admin.request_context import AdminRequestContext
 from acapy_agent.core.error import BaseError
 from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.messaging.models.openapi import OpenAPISchema
 from acapy_agent.messaging.models.paginated_query import get_paginated_query_params
 from acapy_agent.multitenant.admin.routes import (
     CreateWalletRequestSchema,
@@ -16,7 +17,6 @@ from acapy_agent.multitenant.admin.routes import (
     UpdateWalletRequestSchema,
     WalletIdMatchInfoSchema,
     WalletListQueryStringSchema,
-    WalletListSchema,
     WalletSettingsError,
     get_extra_settings_dict_per_tenant,
     wallet_create_token,
@@ -67,12 +67,17 @@ class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema, GroupId):
     """Request schema for updating a existing wallet."""
 
 
-class WalletListWithGroupIdSchema(WalletListSchema, GroupId):
-    """Result schema for wallet list."""
-
-
 class WalletRecordWithGroupIdSchema(WalletRecordSchema, GroupId):
     """Schema to allow serialization/deserialization of record."""
+
+
+class WalletListWithGroupIdSchema(OpenAPISchema):
+    """Result schema for wallet list."""
+
+    results = fields.List(
+        fields.Nested(WalletRecordWithGroupIdSchema()),
+        metadata={"description": "List of wallet records"},
+    )
 
 
 def format_wallet_record(wallet_record: WalletRecord):
