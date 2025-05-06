@@ -1,9 +1,9 @@
 """
-    Multitenant admin routes.
+Multitenant admin routes.
 
-    This file has been copied from: https://github.com/didx-xyz/acapy/blob/1.1.1b0/acapy_agent/multitenant/admin/routes.py
+This file has been copied from: https://github.com/openwallet-foundation/acapy/blob/1.3.0/acapy_agent/multitenant/admin/routes.py
 
-    We do this because we want to override two endpoints
+We do this because we want to override 4 endpoints - create, update, list, get
 """
 
 from acapy_agent.admin.request_context import AdminRequestContext
