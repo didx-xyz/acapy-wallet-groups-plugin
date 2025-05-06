@@ -71,7 +71,7 @@ class WalletRecordWithGroupIdSchema(WalletRecordSchema, GroupId):
     """Schema to allow serialization/deserialization of record."""
 
 
-class WalletListSchema(OpenAPISchema):
+class WalletListWithGroupIdSchema(OpenAPISchema):
     """Result schema for wallet list."""
 
     results = fields.List(
@@ -97,7 +97,7 @@ def format_wallet_record(wallet_record: WalletRecord):
 
 @docs(tags=["multitenancy"], summary="Query subwallets")
 @querystring_schema(WalletListQueryStringWithGroupIdSchema())
-@response_schema(WalletListSchema(), 200, description="")
+@response_schema(WalletListWithGroupIdSchema(), 200, description="")
 async def wallets_list(request: web.BaseRequest):
     """Request handler for listing all internal subwallets.
 
