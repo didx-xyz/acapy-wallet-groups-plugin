@@ -39,13 +39,20 @@ from marshmallow import fields
 
 # Deduplicate GroupId field definition, to append to following OpenApiSchema classes
 class GroupId:
-    group_id_field = fields.Str(
+    group_id = fields.Str(
         metadata={"description": "Wallet group identifier.", "example": "some_group_id"}
     )
 
 
-class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema, GroupId):
+class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema):
     """Request schema for adding a new wallet which will be registered by the agent."""
+
+    group_id = fields.Str(
+        metadata={
+            "description": "An optional group identifier. Useful with `get_tenants` to fetch wallets by group id.",
+            "example": "some_group_id",
+        }
+    )
 
 
 class CreateWalletResponseWithGroupIdSchema(CreateWalletResponseSchema, GroupId):
