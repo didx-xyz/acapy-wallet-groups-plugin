@@ -58,7 +58,7 @@ In order to run the tests, you'll need to install the dependencies first. The ch
 
 ```shell
 # Install poetry
-pip install poetry==1.7.1
+pip install poetry==2.1.3
 
 # Activate the environment
 poetry shell
