@@ -11,8 +11,8 @@ jobs:
       - uses: actions/checkout@v4
 
       # See https://github.com/actions/runner-images/issues/6185
-      - name: Install keyring for python
-        run: sudo apt install gnome-keyring
+      - name: Install gnome-keyring
+        run: sudo apt-get update && sudo apt-get install -y gnome-keyring
 
       - name: Set up Python 3.12.4
         uses: actions/setup-python@v5
