@@ -6,6 +6,8 @@ This file has been copied from: https://github.com/openwallet-foundation/acapy/b
 We do this because we want to override 4 endpoints - create, update, list, get
 """
 
+import logging
+
 from acapy_agent.admin.request_context import AdminRequestContext
 from acapy_agent.core.error import BaseError
 from acapy_agent.messaging.models.base import BaseModelError
@@ -35,6 +37,8 @@ from aiohttp_apispec import (
     response_schema,
 )
 from marshmallow import fields
+
+logger = logging.getLogger(__name__)
 
 
 # Deduplicate GroupId field definition, to append to following OpenApiSchema classes
@@ -220,7 +224,10 @@ async def wallet_create(request: web.BaseRequest):
         wallet_record = await multitenant_mgr.create_wallet(
             settings, key_management_mode
         )
+    except BaseError as err:
+        raise web.HTTPBadRequest(reason=err.roll_up) from err
 
+    try:
         # Set the custom group_id
         if group_id:
             wallet_record.group_id = group_id
@@ -236,7 +243,15 @@ async def wallet_create(request: web.BaseRequest):
         )
         await attempt_auto_author_with_endorser_setup(wallet_profile)
     except BaseError as err:
-        raise web.HTTPBadRequest(reason=err.roll_up) from err
+        # If something fails, clean up by removing the wallet
+        try:
+            await multitenant_mgr.remove_wallet(wallet_record.wallet_id, wallet_key)
+        except Exception:
+            logger.exception(
+                f"Failed to remove stray wallet (wallet_id: {wallet_record.wallet_id}, "
+                f"group_id: {group_id}) as cleanup after the following error: {err}"
+            )
+        raise web.HTTPInternalServerError(reason=err.roll_up) from err
 
     result = {
         **format_wallet_record(wallet_record),
