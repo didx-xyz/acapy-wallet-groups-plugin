@@ -1,7 +1,7 @@
 """
 Multitenant admin routes.
 
-This file has been copied from: https://github.com/openwallet-foundation/acapy/blob/1.3.0/acapy_agent/multitenant/admin/routes.py
+This file has been copied from: https://github.com/openwallet-foundation/acapy/blob/1.4.0/acapy_agent/multitenant/admin/routes.py
 
 We do this because we want to override 4 endpoints - create, update, list, get
 """
@@ -10,6 +10,8 @@ import logging
 
 from acapy_agent.admin.request_context import AdminRequestContext
 from acapy_agent.core.error import BaseError
+from acapy_agent.core.event_bus import Event, EventBus
+from acapy_agent.core.util import MULTITENANT_WALLET_CREATED_TOPIC
 from acapy_agent.messaging.models.base import BaseModelError
 from acapy_agent.messaging.models.openapi import OpenAPISchema
 from acapy_agent.messaging.models.paginated_query import get_paginated_query_params
@@ -199,6 +201,7 @@ async def wallet_create(request: web.BaseRequest):
         "wallet.type": sub_wallet_type,
         "wallet.name": body.get("wallet_name"),
         "wallet.key": wallet_key,
+        "dbstore.key": body.get("dbstore_key"),
         "wallet.webhook_urls": wallet_webhook_urls,
         "wallet.dispatch_type": wallet_dispatch_type,
     }
@@ -242,6 +245,20 @@ async def wallet_create(request: web.BaseRequest):
             context, wallet_record, extra_settings=settings
         )
         await attempt_auto_author_with_endorser_setup(wallet_profile)
+
+        event_bus = context.profile.inject_or(EventBus)
+        if event_bus:
+            await event_bus.notify(
+                context.profile,
+                Event(
+                    f"{MULTITENANT_WALLET_CREATED_TOPIC}::{wallet_record.wallet_id}",
+                    {
+                        "wallet_id": wallet_record.wallet_id,
+                        "wallet_name": wallet_record.wallet_name,
+                        "settings": wallet_record.settings,
+                    },
+                ),
+            )
     except BaseError as err:
         # If something fails, clean up by removing the wallet
         try:
