@@ -50,7 +50,23 @@ class GroupId:
     )
 
 
-class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema):
+class Roles:
+    roles = fields.List(
+        fields.Str(
+            metadata={
+                "description": "Roles for the wallet.",
+                "example": "issuer, verifier",
+            }
+        ),
+        required=False,
+        metadata={
+            "description": "List of roles for the wallet.",
+            "example": '["issuer", "verifier"]',
+        },
+    )
+
+
+class CreateWalletRequestWithGroupIdSchema(CreateWalletRequestSchema, Roles):
     """Request schema for adding a new wallet which will be registered by the agent."""
 
     group_id = fields.Str(
@@ -69,7 +85,7 @@ class WalletListQueryStringWithGroupIdSchema(WalletListQueryStringSchema, GroupI
     """Parameters and validators for wallet list request query string."""
 
 
-class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema, GroupId):
+class UpdateWalletRequestWithGroupIdSchema(UpdateWalletRequestSchema, GroupId, Roles):
     """Request schema for updating a existing wallet."""
 
 
@@ -190,9 +206,11 @@ async def wallet_create(request: web.BaseRequest):
     key_management_mode = body.get("key_management_mode") or WalletRecord.MODE_MANAGED
     wallet_key = body.get("wallet_key")
     group_id = body.get("group_id")
+    roles = body.get("roles") or []
     wallet_webhook_urls = body.get("wallet_webhook_urls") or []
     wallet_dispatch_type = body.get("wallet_dispatch_type") or "default"
     extra_settings = body.get("extra_settings") or {}
+
     # If no webhooks specified, then dispatch only to base webhook targets
     if wallet_webhook_urls == []:
         wallet_dispatch_type = "base"
@@ -220,6 +238,9 @@ async def wallet_create(request: web.BaseRequest):
 
     if group_id is not None:
         settings["wallet.group_id"] = group_id  # add group_id to wallet settings
+
+    if roles:
+        settings["wallet.roles"] = roles
 
     try:
         multitenant_mgr = context.profile.inject(BaseMultitenantManager)
@@ -298,6 +319,7 @@ async def wallet_update(request: web.BaseRequest):
     image_url = body.get("image_url")
     group_id = body.get("group_id")
     extra_settings = body.get("extra_settings")
+    roles = body.get("roles") or []
 
     if all(
         v is None
@@ -331,6 +353,9 @@ async def wallet_update(request: web.BaseRequest):
 
     if group_id is not None:
         settings["wallet.group_id"] = group_id  # add group_id to wallet settings
+
+    if roles:
+        settings["wallet.roles"] = roles
 
     extra_subwallet_setting = get_extra_settings_dict_per_tenant(extra_settings or {})
     settings.update(extra_subwallet_setting)
